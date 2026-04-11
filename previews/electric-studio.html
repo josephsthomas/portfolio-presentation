@@ -1,0 +1,410 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview — Electric Studio (Navy Tuned) — Joe Thomas</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   VIEWPORT BASE (from viewport-base.css)
+   =========================================== */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    position: relative;
+}
+
+:root {
+    /* Sampled from source deck theme */
+    --bg-light: #F4F6FB;
+    --bg-cream: #faf9f4;
+    --bg-deep: #1E2761;
+    --bg-deeper: #0f1640;
+    --ink-dark: #1A1D2C;
+    --ink-muted: #6C7593;
+    --ink-on-dark: #ffffff;
+    --ink-on-dark-muted: rgba(255, 255, 255, 0.7);
+    --accent-blue: #4A90E2;
+    --accent-sky: #7DD3FC;
+    --rule: rgba(26, 29, 44, 0.1);
+    --rule-on-dark: rgba(255, 255, 255, 0.15);
+
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-body: 'Figtree', -apple-system, sans-serif;
+
+    --slide-padding-h: clamp(2rem, 5vw, 5.5rem);
+    --title-size: clamp(3rem, 8vw, 7.5rem);
+    --eyebrow-size: clamp(0.7rem, 1vw, 0.85rem);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg-light);
+    color: var(--ink-dark);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'kern', 'liga';
+}
+
+/* ===========================================
+   SLIDE 1 — TITLE / ELECTRIC STUDIO (NAVY TUNED)
+   Two-panel vertical split: cream top, navy bottom
+   =========================================== */
+
+.slide-title {
+    display: grid;
+    grid-template-rows: 62fr 38fr;
+}
+
+/* TOP PANEL — light cream with the big name */
+.panel-light {
+    background: var(--bg-cream);
+    padding: var(--slide-padding-h);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle diagonal lines pattern */
+.panel-light::before {
+    content: '';
+    position: absolute;
+    top: 0; right: 0;
+    width: 40%;
+    height: 100%;
+    background: repeating-linear-gradient(
+        -45deg,
+        transparent 0,
+        transparent 12px,
+        rgba(30, 39, 97, 0.04) 12px,
+        rgba(30, 39, 97, 0.04) 13px
+    );
+    pointer-events: none;
+}
+
+.top-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 1;
+    position: relative;
+}
+
+/* Monogram top-left */
+.monogram {
+    font-family: var(--font-display);
+    font-size: clamp(1.5rem, 2vw, 2rem);
+    font-weight: 700;
+    font-style: italic;
+    color: var(--bg-deep);
+    display: flex;
+    align-items: center;
+    gap: 0.6rem;
+}
+
+.monogram::before {
+    content: '';
+    display: inline-block;
+    width: clamp(22px, 2.5vw, 34px);
+    height: clamp(22px, 2.5vw, 34px);
+    background: var(--bg-deep);
+    border-radius: 50%;
+    border: 2px solid var(--bg-deep);
+    box-shadow: inset 0 0 0 3px var(--bg-cream);
+}
+
+/* Top-right meta */
+.top-meta {
+    text-align: right;
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    color: var(--ink-muted);
+    font-weight: 500;
+    line-height: 1.6;
+}
+
+.top-meta strong {
+    color: var(--ink-dark);
+    font-weight: 600;
+}
+
+.top-meta .rule {
+    display: inline-block;
+    width: clamp(30px, 4vw, 60px);
+    height: 1px;
+    background: var(--ink-muted);
+    vertical-align: middle;
+    margin: 0 0.6rem;
+}
+
+/* Big name — hero typography */
+.hero-name {
+    font-family: var(--font-display);
+    font-size: var(--title-size);
+    line-height: 0.86;
+    font-weight: 700;
+    letter-spacing: -0.035em;
+    color: var(--ink-dark);
+    max-width: min(92vw, 1600px);
+    z-index: 1;
+    position: relative;
+    margin-top: auto;
+    opacity: 0;
+    animation: heroIn 1.2s cubic-bezier(0.2, 0.8, 0.2, 1) 0.2s forwards;
+}
+
+.hero-name em {
+    font-style: italic;
+    color: var(--bg-deep);
+    font-weight: 400;
+}
+
+.hero-name .ampersand {
+    font-style: italic;
+    color: var(--accent-blue);
+    font-weight: 400;
+}
+
+/* The accent bar between panels */
+.accent-bar {
+    position: absolute;
+    bottom: 0; left: var(--slide-padding-h); right: var(--slide-padding-h);
+    height: 4px;
+    background: linear-gradient(90deg, var(--accent-blue) 0%, var(--accent-sky) 40%, transparent 100%);
+    transform-origin: left;
+    animation: barIn 1s ease 0.8s both;
+}
+
+@keyframes barIn {
+    from { transform: scaleX(0); opacity: 0; }
+    to   { transform: scaleX(1); opacity: 1; }
+}
+
+/* BOTTOM PANEL — deep navy with supporting details */
+.panel-dark {
+    background:
+        radial-gradient(ellipse at 30% 0%, rgba(74, 144, 226, 0.2) 0%, transparent 55%),
+        linear-gradient(180deg, var(--bg-deep) 0%, var(--bg-deeper) 100%);
+    color: var(--ink-on-dark);
+    padding: var(--slide-padding-h);
+    display: grid;
+    grid-template-columns: 1.25fr 1fr;
+    gap: clamp(1rem, 3vw, 3rem);
+    align-items: center;
+    position: relative;
+    overflow: hidden;
+}
+
+/* Subtle grid pattern in dark panel */
+.panel-dark::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+    background-size: clamp(40px, 5vw, 80px) clamp(40px, 5vw, 80px);
+    mask-image: linear-gradient(to right, transparent 0%, black 100%);
+    -webkit-mask-image: linear-gradient(to right, transparent 0%, black 100%);
+    pointer-events: none;
+}
+
+/* Left side — the quote/statement */
+.statement {
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 1s ease 1s forwards;
+}
+
+.statement-label {
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.22em;
+    font-weight: 600;
+    color: var(--accent-sky);
+    margin-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+    display: flex;
+    align-items: center;
+    gap: 0.75rem;
+}
+
+.statement-label::before {
+    content: '';
+    width: clamp(22px, 3vw, 44px);
+    height: 1px;
+    background: var(--accent-blue);
+}
+
+.statement-text {
+    font-family: var(--font-display);
+    font-size: clamp(1.4rem, 2.3vw, 2.25rem);
+    font-weight: 400;
+    font-style: italic;
+    line-height: 1.28;
+    max-width: 28ch;
+    color: var(--ink-on-dark);
+}
+
+.statement-text strong {
+    font-style: normal;
+    font-weight: 700;
+    color: var(--accent-sky);
+}
+
+/* Right side — discipline list */
+.disciplines {
+    z-index: 1;
+    opacity: 0;
+    animation: fadeUp 1s ease 1.2s forwards;
+}
+
+.disciplines-label {
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.2em;
+    font-weight: 600;
+    color: var(--ink-on-dark-muted);
+    margin-bottom: clamp(0.75rem, 1.5vh, 1.25rem);
+}
+
+.discipline-list {
+    list-style: none;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: clamp(0.4rem, 1vh, 0.75rem) clamp(0.75rem, 2vw, 1.5rem);
+    font-family: var(--font-body);
+    font-size: clamp(0.78rem, 1.05vw, 0.98rem);
+    font-weight: 400;
+}
+
+.discipline-list li {
+    display: flex;
+    align-items: baseline;
+    gap: 0.5rem;
+    color: var(--ink-on-dark);
+    padding-bottom: 0.5rem;
+    border-bottom: 1px solid var(--rule-on-dark);
+}
+
+.discipline-list li::before {
+    content: counter(item, decimal-leading-zero);
+    counter-increment: item;
+    font-family: var(--font-display);
+    font-style: italic;
+    font-size: 0.85em;
+    color: var(--accent-sky);
+    font-weight: 400;
+}
+
+.discipline-list { counter-reset: item; }
+
+/* Animations */
+@keyframes heroIn {
+    from { opacity: 0; transform: translateY(30px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+/* Short viewports */
+@media (max-height: 700px) {
+    :root {
+        --slide-padding-h: clamp(1.25rem, 3.5vw, 3rem);
+        --title-size: clamp(2.5rem, 7vw, 5.5rem);
+    }
+}
+
+@media (max-width: 900px) {
+    .slide-title {
+        grid-template-rows: 55fr 45fr;
+    }
+    .panel-dark {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+    .discipline-list {
+        grid-template-columns: 1fr 1fr;
+        font-size: 0.78rem;
+    }
+    .top-meta { font-size: 0.65rem; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+</style>
+</head>
+<body>
+
+<section class="slide slide-title">
+
+    <!-- TOP PANEL — cream -->
+    <div class="panel-light">
+
+        <div class="top-row">
+            <div class="monogram">J·T</div>
+            <div class="top-meta">
+                <strong>Portfolio 2026</strong>
+                <span class="rule"></span>
+                86 Slides, 9 Case Studies<br>
+                Content &nbsp;·&nbsp; Experience &nbsp;·&nbsp; AI
+            </div>
+        </div>
+
+        <h1 class="hero-name">
+            Joe Thomas <span class="ampersand">&amp;</span><br>
+            <em>the practice of content.</em>
+        </h1>
+
+        <div class="accent-bar"></div>
+    </div>
+
+    <!-- BOTTOM PANEL — navy -->
+    <div class="panel-dark">
+
+        <div class="statement">
+            <div class="statement-label">Currently</div>
+            <p class="statement-text">
+                <strong>Senior Content Strategy</strong> &amp; Experience Leader — fifteen years shaping how Fortune 500 brands speak, connect, and convert.
+            </p>
+        </div>
+
+        <div class="disciplines">
+            <div class="disciplines-label">Six Disciplines, One Practice</div>
+            <ol class="discipline-list">
+                <li>Content Strategy</li>
+                <li>Experience Strategy</li>
+                <li>AI-Enabled Content Ops</li>
+                <li>Information Architecture</li>
+                <li>LLM-Aware SEO</li>
+                <li>Engagement &amp; Delivery</li>
+            </ol>
+        </div>
+
+    </div>
+
+</section>
+
+</body>
+</html>
