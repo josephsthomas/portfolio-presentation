@@ -1,6 +1,7 @@
 # Extracted image assets (465 MB, too large for git — lives in GitHub release)
 extracted/assets/
 site/assets/
+site/assets-web/
 
 # Source PowerPoint is hosted as a GitHub release asset, not in git
 *.pptx

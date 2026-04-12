@@ -19,8 +19,16 @@ def js():
 
 def h(t): return H.escape(str(t)) if t else ''
 
+def web_path(p):
+    """Rewrite assets/ → assets-web/, .gif/.tiff → .png (converted by optimizer)."""
+    p = p.replace('assets/', 'assets-web/', 1)
+    for ext in ('.gif', '.tiff'):
+        if p.endswith(ext):
+            p = p[:-len(ext)] + '.png'
+    return p
+
 def img(image, lazy=True):
-    p = image['path']
+    p = web_path(image['path'])
     attr = f'data-src="{h(p)}"' if lazy else f'src="{h(p)}"'
     return f'<figure class="media-frame"><img {attr} alt="" loading="lazy"></figure>'
 
