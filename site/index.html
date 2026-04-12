@@ -1,0 +1,2749 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Joe Thomas — Portfolio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+<style>
+/* === REVEAL ANIMATION === */
+.reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1), transform 0.7s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .reveal { opacity: 1; transform: translateY(0); }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.1s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.18s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(5) { transition-delay: 0.32s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.38s; }
+/* === PROGRESS BAR === */
+.deck-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 100; pointer-events: none; }
+.deck-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); transition: width 0.3s ease; }
+.deck-counter { position: fixed; bottom: 1rem; right: 1.5rem; font-family: var(--font-display); font-style: italic; font-size: 0.85rem; color: var(--ink-inv-soft); z-index: 100; pointer-events: none; letter-spacing: 0.05em; }
+/* ============================================================
+   DESIGN TOKENS — sampled from Case.Studies.pptx theme XML
+   ============================================================ */
+
+:root {
+  /* ---- Brand navy ---- */
+  --navy-900: #0a0f24;   /* deepest bg */
+  --navy-800: #12183D;   /* stat card bg */
+  --navy-700: #141a3a;
+  --navy-600: #1E2761;   /* primary brand navy */
+  --navy-500: #2B3773;
+
+  /* ---- Accent ---- */
+  --blue-500: #4A90E2;   /* electric blue accent */
+  --blue-400: #7DD3FC;   /* accent sky */
+  --blue-200: #CADCFC;   /* rule lavender */
+
+  /* ---- Surface ---- */
+  --cream:   #FAF9F4;
+  --paper:   #F5F7FB;
+  --white:   #FFFFFF;
+
+  /* ---- Ink ---- */
+  --ink:          #1A1D2C;
+  --ink-mute:     #6C7593;
+  --ink-soft:     #9AA3C0;
+  --ink-inv:      #FFFFFF;
+  --ink-inv-mute: rgba(255, 255, 255, 0.68);
+  --ink-inv-soft: rgba(255, 255, 255, 0.38);
+
+  /* ---- Rules ---- */
+  --rule:     rgba(26, 29, 44, 0.10);
+  --rule-inv: rgba(255, 255, 255, 0.15);
+
+  /* ---- Type families ---- */
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body:    'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ---- Fluid type scale ---- */
+  --t-hero:    clamp(3rem, 8vw, 7.5rem);
+  --t-title:   clamp(2rem, 5vw, 4.5rem);
+  --t-h1:      clamp(1.75rem, 3.8vw, 3rem);
+  --t-h2:      clamp(1.35rem, 2.6vw, 2.25rem);
+  --t-h3:      clamp(1.05rem, 1.6vw, 1.4rem);
+  --t-body:    clamp(0.9rem, 1.15vw, 1.1rem);
+  --t-small:   clamp(0.78rem, 1vw, 0.92rem);
+  --t-meta:    clamp(0.68rem, 0.95vw, 0.82rem);
+  --t-eyebrow: clamp(0.68rem, 0.92vw, 0.8rem);
+
+  /* ---- Big-number scale (stat cards, hero numbers) ---- */
+  --t-stat-lg: clamp(3rem, 6vw, 5rem);
+  --t-stat-md: clamp(2rem, 4vw, 3.25rem);
+
+  /* ---- Spacing (fluid) ---- */
+  --pad-slide: clamp(2rem, 5vw, 5.5rem);
+  --gap-xl:    clamp(2rem, 4vw, 4rem);
+  --gap-lg:    clamp(1.5rem, 3vw, 3rem);
+  --gap-md:    clamp(1rem, 2vw, 1.5rem);
+  --gap-sm:    clamp(0.5rem, 1vw, 0.85rem);
+
+  /* ---- Radii ---- */
+  --r-sm: 4px;
+  --r-md: 10px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 200ms;
+  --dur-med:  600ms;
+  --dur-slow: 1000ms;
+
+  /* ---- Shadow ---- */
+  --sh-card: 0 20px 60px rgba(10, 15, 36, 0.12);
+  --sh-card-dark: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Per-slide theme switch */
+.slide[data-theme="dark"]  { color-scheme: dark; }
+.slide[data-theme="light"] { color-scheme: light; }
+
+/* ============================================================
+   BASE — resets, scroll-snap, slide viewport
+   adapted from frontend-slides/viewport-base.css
+   ============================================================ */
+
+*, *::before, *::after {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+  overflow-x: hidden;
+}
+
+html {
+  scroll-snap-type: y mandatory;
+  scroll-behavior: smooth;
+  scrollbar-width: thin;
+  scrollbar-color: var(--navy-600) transparent;
+}
+
+body {
+  background: var(--navy-900);
+  color: var(--ink);
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  text-rendering: optimizeLegibility;
+  font-feature-settings: 'kern', 'liga', 'calt';
+}
+
+img, svg, video {
+  max-width: 100%;
+  display: block;
+}
+
+a { color: inherit; text-decoration: none; }
+button { font: inherit; cursor: pointer; background: none; border: none; color: inherit; }
+ol, ul { list-style: none; }
+
+/* ---------- Slide container ---------- */
+.slide {
+  width: 100vw;
+  height: 100vh;
+  height: 100dvh;
+  overflow: hidden;
+  scroll-snap-align: start;
+  scroll-snap-stop: always;
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  /* Hint browser to skip rendering off-screen slides */
+  content-visibility: auto;
+  contain-intrinsic-size: 100vh;
+}
+
+/* ---------- Slide theme backgrounds ---------- */
+.slide[data-theme="light"] {
+  background: var(--cream);
+  color: var(--ink);
+}
+
+.slide[data-theme="paper"] {
+  background: var(--paper);
+  color: var(--ink);
+}
+
+.slide[data-theme="dark"] {
+  background:
+    radial-gradient(ellipse at 80% 20%, rgba(74, 144, 226, 0.16) 0%, transparent 50%),
+    radial-gradient(ellipse at 20% 90%, rgba(30, 39, 97, 0.5) 0%, transparent 55%),
+    linear-gradient(135deg, var(--navy-900) 0%, var(--navy-700) 50%, var(--navy-900) 100%);
+  color: var(--ink-inv);
+}
+
+.slide[data-theme="dark-solid"] {
+  background: linear-gradient(180deg, var(--navy-600) 0%, var(--navy-800) 100%);
+  color: var(--ink-inv);
+}
+
+/* ---------- Focus / selection ---------- */
+:focus-visible {
+  outline: 2px solid var(--blue-500);
+  outline-offset: 3px;
+}
+
+::selection {
+  background: var(--blue-500);
+  color: var(--white);
+}
+
+/* ---------- Reduced motion ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.2s !important;
+  }
+}
+
+/* ---------- Print (PDF export) ---------- */
+@media print {
+  html { scroll-snap-type: none; }
+  body { background: var(--white); color: var(--ink); }
+  .slide {
+    page-break-after: always;
+    height: 100vh;
+    content-visibility: visible;
+  }
+  .deck-nav, .deck-progress { display: none !important; }
+  [data-theme="dark"], [data-theme="dark-solid"] {
+    background: var(--navy-600) !important;
+    -webkit-print-color-adjust: exact;
+    print-color-adjust: exact;
+  }
+}
+
+/* ============================================================
+   COMPONENTS — atomic pieces, mapped to pptx shape kinds
+   Pills, numbered ovals, stat cards, timelines, stripes, etc.
+   ============================================================ */
+
+/* ---------- Pill (tag, goal, discipline) ---------- */
+.pill {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  padding: 0.5em 1.15em;
+  border-radius: var(--r-pill);
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  font-weight: 500;
+  letter-spacing: 0.04em;
+  line-height: 1.2;
+  white-space: nowrap;
+  border: 1px solid var(--rule);
+  background: var(--white);
+  color: var(--ink);
+  transition: all var(--dur-fast) var(--ease-out);
+}
+
+.pill--goal {
+  background: transparent;
+  border-color: var(--navy-600);
+  color: var(--navy-600);
+  font-weight: 600;
+}
+
+.pill--tag {
+  background: var(--blue-200);
+  color: var(--navy-600);
+  border-color: transparent;
+}
+
+.pill--discipline {
+  background: var(--navy-600);
+  color: var(--white);
+  border-color: var(--navy-600);
+}
+
+.pill--uppercase {
+  text-transform: uppercase;
+  letter-spacing: 0.12em;
+  font-size: var(--t-meta);
+}
+
+/* Dark-theme variants */
+[data-theme="dark"] .pill,
+[data-theme="dark-solid"] .pill {
+  background: rgba(255, 255, 255, 0.04);
+  color: var(--ink-inv);
+  border-color: var(--rule-inv);
+  backdrop-filter: blur(6px);
+}
+
+[data-theme="dark"] .pill--goal,
+[data-theme="dark-solid"] .pill--goal {
+  border-color: var(--blue-500);
+  color: var(--blue-400);
+}
+
+.pill-row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-sm);
+}
+
+/* ---------- Numbered oval (step marker) ---------- */
+.num-oval {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: clamp(2.4rem, 3.6vw, 3.6rem);
+  height: clamp(2.4rem, 3.6vw, 3.6rem);
+  border-radius: 50%;
+  border: 2px solid var(--navy-600);
+  background: var(--white);
+  color: var(--navy-600);
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  font-weight: 400;
+  flex-shrink: 0;
+}
+
+.num-oval--filled {
+  background: var(--navy-600);
+  color: var(--white);
+}
+
+.num-oval--accent {
+  border-color: var(--blue-500);
+  color: var(--blue-500);
+}
+
+[data-theme="dark"] .num-oval,
+[data-theme="dark-solid"] .num-oval {
+  border-color: var(--blue-400);
+  color: var(--blue-400);
+  background: transparent;
+}
+
+[data-theme="dark"] .num-oval--filled,
+[data-theme="dark-solid"] .num-oval--filled {
+  background: var(--blue-500);
+  color: var(--white);
+  border-color: var(--blue-500);
+}
+
+/* ---------- Numbered card (step + label + description) ---------- */
+.num-card {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-sm);
+  padding: clamp(1.25rem, 2vw, 1.75rem);
+  background: var(--white);
+  border-left: 3px solid var(--blue-500);
+  border-radius: 0 var(--r-md) var(--r-md) 0;
+  box-shadow: var(--sh-card);
+  position: relative;
+  transition: transform var(--dur-fast) var(--ease-out);
+}
+
+.num-card:hover {
+  transform: translateY(-2px);
+}
+
+.num-card__n {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.4rem, 2.2vw, 2rem);
+  color: var(--blue-500);
+  font-weight: 400;
+  line-height: 1;
+}
+
+.num-card__label {
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  color: var(--navy-600);
+  line-height: 1.15;
+}
+
+.num-card__desc {
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  line-height: 1.55;
+}
+
+[data-theme="dark"] .num-card,
+[data-theme="dark-solid"] .num-card {
+  background: rgba(255, 255, 255, 0.04);
+  border-left-color: var(--blue-400);
+  box-shadow: 0 20px 60px rgba(0, 0, 0, 0.3);
+  backdrop-filter: blur(10px);
+}
+
+[data-theme="dark"] .num-card__label,
+[data-theme="dark-solid"] .num-card__label {
+  color: var(--white);
+}
+
+[data-theme="dark"] .num-card__desc,
+[data-theme="dark-solid"] .num-card__desc {
+  color: var(--ink-inv-mute);
+}
+
+/* ---------- Stat card (big number + caption) ---------- */
+.stat-card {
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  gap: var(--gap-sm);
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+  background: var(--navy-800);
+  color: var(--ink-inv);
+  border-radius: var(--r-md);
+  position: relative;
+  overflow: hidden;
+  min-height: clamp(10rem, 18vh, 14rem);
+}
+
+.stat-card::before {
+  content: '';
+  position: absolute;
+  top: 0; left: 0; right: 0;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-500), var(--blue-400));
+  opacity: 0.9;
+}
+
+.stat-card__big {
+  font-family: var(--font-display);
+  font-size: var(--t-stat-lg);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.stat-card__big em {
+  font-style: italic;
+  color: var(--blue-400);
+  font-weight: 400;
+}
+
+.stat-card__cap {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  line-height: 1.45;
+  color: var(--ink-inv-mute);
+  max-width: 24ch;
+}
+
+.stat-card--light {
+  background: var(--white);
+  color: var(--ink);
+}
+
+.stat-card--light .stat-card__big { color: var(--navy-600); }
+.stat-card--light .stat-card__cap { color: var(--ink-mute); }
+
+/* ---------- Accent stripe ---------- */
+.accent-stripe {
+  border: none;
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-500) 0%, var(--blue-400) 50%, transparent 100%);
+  margin: 0;
+}
+
+.accent-stripe--short {
+  width: clamp(40px, 5vw, 70px);
+  height: 2px;
+  background: var(--blue-500);
+}
+
+.accent-stripe--vertical {
+  width: 2px;
+  height: auto;
+  background: var(--blue-500);
+}
+
+/* ---------- Section label ---------- */
+.section-label {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.85rem;
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-weight: 600;
+  color: var(--navy-600);
+  line-height: 1;
+}
+
+.section-label::before {
+  content: '';
+  width: clamp(28px, 3.5vw, 52px);
+  height: 1px;
+  background: var(--blue-500);
+  flex-shrink: 0;
+}
+
+[data-theme="dark"] .section-label,
+[data-theme="dark-solid"] .section-label {
+  color: var(--blue-400);
+}
+
+/* ---------- Eyebrow (simpler mini-label) ---------- */
+.eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: var(--blue-500);
+}
+
+[data-theme="dark"] .eyebrow,
+[data-theme="dark-solid"] .eyebrow {
+  color: var(--blue-400);
+}
+
+/* ---------- Footer bar ---------- */
+.footer-bar {
+  position: absolute;
+  bottom: 0; left: 0; right: 0;
+  padding: clamp(0.75rem, 1.5vh, 1.25rem) var(--pad-slide);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.16em;
+  color: var(--ink-mute);
+  border-top: 1px solid var(--rule);
+  z-index: 3;
+  pointer-events: none;
+}
+
+[data-theme="dark"] .footer-bar,
+[data-theme="dark-solid"] .footer-bar {
+  color: var(--ink-inv-soft);
+  border-top-color: var(--rule-inv);
+}
+
+.footer-bar__num {
+  font-family: var(--font-display);
+  font-style: italic;
+  letter-spacing: 0;
+  color: var(--blue-500);
+  text-transform: none;
+}
+
+.footer-bar__dot {
+  display: inline-block;
+  width: 5px;
+  height: 5px;
+  border-radius: 50%;
+  background: var(--blue-500);
+  margin: 0 0.6rem;
+  vertical-align: middle;
+}
+
+/* ---------- Timeline dot ---------- */
+.tl-dot {
+  display: inline-block;
+  width: clamp(10px, 1vw, 14px);
+  height: clamp(10px, 1vw, 14px);
+  border-radius: 50%;
+  background: var(--navy-600);
+  flex-shrink: 0;
+}
+
+/* ---------- FROM / TO panel (slides 37, 44, 50) ---------- */
+.ft-grid {
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: var(--gap-md);
+}
+
+.ft-panel {
+  padding: clamp(1.5rem, 2.5vw, 2.25rem);
+  border-radius: var(--r-md);
+  min-height: 12rem;
+}
+
+.ft-panel__label {
+  font-family: var(--font-body);
+  text-transform: uppercase;
+  letter-spacing: 0.22em;
+  font-size: var(--t-eyebrow);
+  font-weight: 600;
+  margin-bottom: 0.75rem;
+}
+
+.ft-panel--from {
+  background: rgba(255, 255, 255, 0.03);
+  border: 1px solid var(--rule-inv);
+  color: var(--ink-inv-mute);
+}
+
+.ft-panel--from .ft-panel__label { color: var(--ink-inv-soft); }
+
+.ft-panel--to {
+  background: linear-gradient(135deg, var(--blue-500) 0%, var(--navy-600) 100%);
+  color: var(--white);
+  box-shadow: var(--sh-card-dark);
+}
+
+.ft-panel--to .ft-panel__label { color: var(--blue-400); }
+
+.ft-arrow {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.5rem, 2.5vw, 2.5rem);
+  color: var(--blue-500);
+  opacity: 0.8;
+}
+
+/* ---------- Media frame ---------- */
+.media-frame {
+  position: relative;
+  overflow: hidden;
+  border-radius: var(--r-md);
+  background: var(--paper);
+  box-shadow: var(--sh-card);
+}
+
+.media-frame img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+}
+
+.media-frame--contain img {
+  object-fit: contain;
+}
+
+.media-frame--raw {
+  box-shadow: none;
+  border-radius: 0;
+  background: transparent;
+}
+
+[data-theme="dark"] .media-frame,
+[data-theme="dark-solid"] .media-frame {
+  background: rgba(255, 255, 255, 0.03);
+  box-shadow: var(--sh-card-dark);
+}
+
+/* ---------- Lazy media placeholder ---------- */
+.media-frame img[data-src] {
+  opacity: 0;
+}
+
+.media-frame img[data-loaded="true"] {
+  opacity: 1;
+  transition: opacity 600ms var(--ease-out);
+}
+
+.media-frame::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(110deg,
+    rgba(255, 255, 255, 0) 0%,
+    rgba(255, 255, 255, 0.08) 50%,
+    rgba(255, 255, 255, 0) 100%);
+  animation: shimmer 2s infinite;
+  pointer-events: none;
+  opacity: 0;
+}
+
+.media-frame[data-state="loading"]::after { opacity: 1; }
+
+@keyframes shimmer {
+  from { transform: translateX(-100%); }
+  to   { transform: translateX(100%); }
+}
+
+/* ---------- Big key number (T4 timeline, T6 stats) ---------- */
+.big-num {
+  font-family: var(--font-display);
+  font-size: var(--t-stat-lg);
+  font-weight: 700;
+  line-height: 0.9;
+  letter-spacing: -0.02em;
+  color: var(--navy-600);
+}
+
+.big-num em {
+  font-style: italic;
+  color: var(--blue-500);
+  font-weight: 400;
+}
+
+[data-theme="dark"] .big-num,
+[data-theme="dark-solid"] .big-num {
+  color: var(--white);
+}
+
+[data-theme="dark"] .big-num em,
+[data-theme="dark-solid"] .big-num em {
+  color: var(--blue-400);
+}
+
+/* ============================================================
+   TEMPLATES — T1..T11 slide layouts
+   Each template is a class on .slide
+   ============================================================ */
+
+/* ============================================================
+   T1 — COVER (slide 1)
+   Two-panel 62/38 vertical split: cream hero top, navy bottom
+   ============================================================ */
+.t-cover {
+  display: grid;
+  grid-template-rows: 62fr 38fr;
+  padding: 0;
+}
+
+.t-cover__top {
+  background: var(--cream);
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.t-cover__top::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 12px,
+    rgba(30, 39, 97, 0.04) 12px,
+    rgba(30, 39, 97, 0.04) 13px
+  );
+  pointer-events: none;
+}
+
+.t-cover__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-weight: 600;
+  color: var(--navy-600);
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__hero {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-top: auto;
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__hero em {
+  font-style: italic;
+  color: var(--navy-600);
+  font-weight: 400;
+}
+
+.t-cover__role {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  color: var(--ink-mute);
+  margin-top: var(--gap-md);
+  max-width: 40ch;
+  font-weight: 400;
+  line-height: 1.4;
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__accent-bar {
+  position: absolute;
+  bottom: 0; left: var(--pad-slide); right: var(--pad-slide);
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-500) 0%, var(--blue-400) 40%, transparent 100%);
+}
+
+.t-cover__bottom {
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(74, 144, 226, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, var(--navy-600) 0%, var(--navy-900) 100%);
+  color: var(--ink-inv);
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.t-cover__bottom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: clamp(40px, 5vw, 80px) clamp(40px, 5vw, 80px);
+  mask-image: linear-gradient(to right, transparent 0%, black 100%);
+  pointer-events: none;
+}
+
+.t-cover__disciplines {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md) var(--gap-lg);
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  z-index: 1;
+  max-width: 1400px;
+}
+
+.t-cover__disciplines > div {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule-inv);
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.t-cover__disciplines > div::before {
+  content: counter(disc, decimal-leading-zero);
+  counter-increment: disc;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--blue-400);
+  font-size: 0.9em;
+}
+
+.t-cover__disciplines { counter-reset: disc; }
+
+.t-cover__contact {
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-inv-mute);
+  z-index: 1;
+}
+
+/* ============================================================
+   T2 — SECTION HERO INTRO (slides 2, 85)
+   Big bio hero + portrait image
+   ============================================================ */
+.t-hero-intro {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-hero-intro__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 60ch;
+}
+
+.t-hero-intro__name {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  color: var(--blue-400);
+}
+
+.t-hero-intro__greeting {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--ink-inv);
+}
+
+.t-hero-intro__role {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 2.3rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--blue-400);
+}
+
+.t-hero-intro__bio {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  color: var(--ink-inv-mute);
+  max-width: 62ch;
+  white-space: pre-line;
+}
+
+.t-hero-intro__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-md);
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-inv-soft);
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--rule-inv);
+  margin-top: var(--gap-sm);
+}
+
+.t-hero-intro__portrait {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card-dark);
+}
+
+.t-hero-intro__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.t-hero-intro__portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(10, 15, 36, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   T3 — NARRATIVE + NUMBERED CARDS (slides 3, 6, 7)
+   Intro column left + grid of num-cards right
+   ============================================================ */
+.t-narrative {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-narrative__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 32ch;
+}
+
+.t-narrative__label {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: var(--blue-500);
+}
+
+.t-narrative__title {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--navy-600);
+}
+
+.t-narrative__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--gap-md);
+}
+
+/* For 6-card or 4-card layouts */
+.t-narrative__cards[data-count="4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ============================================================
+   T4 — TIMELINE / CAREER PATH (slide 8)
+   ============================================================ */
+.t-timeline {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+  position: relative;
+}
+
+.t-timeline__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 60ch;
+}
+
+.t-timeline__rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.t-timeline__rail::before {
+  content: '';
+  position: absolute;
+  left: calc(clamp(2.4rem, 3.6vw, 3.6rem) / 2);
+  top: 1.8rem;
+  bottom: 1.8rem;
+  width: 2px;
+  background: var(--blue-200);
+}
+
+.t-timeline__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-md);
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: var(--gap-md);
+}
+
+.t-timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.t-timeline__body {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--gap-md);
+  align-items: baseline;
+  padding-top: 0.5rem;
+}
+
+.t-timeline__years {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  color: var(--navy-600);
+  font-weight: 400;
+}
+
+.t-timeline__company {
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.t-timeline__role {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  margin-top: 0.25rem;
+}
+
+.t-timeline__note {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  line-height: 1.5;
+  grid-column: 1 / -1;
+}
+
+/* ============================================================
+   T5 — CASE STUDY INTRO (slides 35, 41, 47, 53, 58/59, 64/65, 70/71, 75/76, 80/81)
+   Client name hero + meta
+   ============================================================ */
+.t-case-intro {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-case-intro__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 50ch;
+}
+
+.t-case-intro__counter {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+  color: var(--blue-400);
+}
+
+.t-case-intro__label {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  color: var(--blue-400);
+}
+
+.t-case-intro__client {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.t-case-intro__tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--blue-400);
+  font-weight: 400;
+}
+
+.t-case-intro__image {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card-dark);
+}
+
+.t-case-intro__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   T6 — STAT GRID (slide 4 "By the numbers", case results)
+   ============================================================ */
+.t-stats {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+  position: relative;
+}
+
+.t-stats__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.t-stats__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-stats__grid[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================================
+   T7 — SITUATION + GOALS (case slide +1, e.g. 36, 42, 48)
+   ============================================================ */
+.t-situation {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-situation__narrative {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.t-situation__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--navy-600);
+  letter-spacing: -0.01em;
+}
+
+.t-situation__body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  color: var(--ink);
+  white-space: pre-line;
+  max-width: 55ch;
+}
+
+.t-situation__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card);
+}
+
+.t-situation__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-theme="dark"] .t-situation__heading,
+[data-theme="dark-solid"] .t-situation__heading {
+  color: var(--white);
+}
+
+[data-theme="dark"] .t-situation__body,
+[data-theme="dark-solid"] .t-situation__body {
+  color: var(--ink-inv-mute);
+}
+
+/* ============================================================
+   T8 — APPROACH / SOLUTION NARRATIVE
+   Mixed text + image
+   ============================================================ */
+.t-approach {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-approach--reverse {
+  grid-template-columns: 1fr 1fr;
+}
+
+.t-approach--reverse .t-approach__text {
+  order: 2;
+}
+
+.t-approach__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 55ch;
+}
+
+.t-approach__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--navy-600);
+}
+
+.t-approach__body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+[data-theme="dark"] .t-approach__heading,
+[data-theme="dark-solid"] .t-approach__heading {
+  color: var(--white);
+}
+
+.t-approach__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card);
+  position: relative;
+}
+
+.t-approach__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   T9 — RESULTS + METRICS
+   2x2 or 3x2 stat-card grid
+   ============================================================ */
+.t-results {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+}
+
+.t-results__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-results__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.t-results__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-results__grid[data-count="4"] { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; }
+
+/* ============================================================
+   T10 — TRANSITION (slides 10, 11, 33, 34)
+   Part number + title, minimal
+   ============================================================ */
+.t-transition {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  position: relative;
+}
+
+.t-transition::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 40%;
+  height: 1px;
+  background: var(--rule-inv);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.t-transition__part {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  color: var(--blue-400);
+  z-index: 1;
+}
+
+.t-transition__title {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  max-width: 18ch;
+  z-index: 1;
+}
+
+.t-transition__body {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ink-inv-mute);
+  max-width: 60ch;
+  z-index: 1;
+  white-space: pre-line;
+}
+
+/* ============================================================
+   T11 — CLOSING (slide 86)
+   ============================================================ */
+.t-closing {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--gap-md);
+}
+
+.t-closing__title {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--white);
+}
+
+.t-closing__sub {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--blue-400);
+}
+
+/* ============================================================
+   T12 — GALLERY (slides 16-31, 40, 52, 62-63, 68-69, 74, 79, 84)
+   Screenshot-heavy layouts
+   ============================================================ */
+.t-gallery {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-md);
+  position: relative;
+}
+
+.t-gallery__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-gallery__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  color: var(--navy-600);
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .t-gallery__heading,
+[data-theme="dark-solid"] .t-gallery__heading {
+  color: var(--white);
+}
+
+.t-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  flex: 1;
+  min-height: 0;
+}
+
+.t-gallery__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-gallery__grid[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+.t-gallery__grid[data-count="5"] { grid-template-columns: repeat(5, 1fr); }
+.t-gallery__grid[data-count="6"] { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; }
+.t-gallery__grid[data-count="7"] { grid-template-columns: repeat(4, 1fr); }
+.t-gallery__grid[data-count="8"], .t-gallery__grid[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
+
+.t-gallery__caption {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  line-height: 1.5;
+  max-width: 70ch;
+}
+
+[data-theme="dark"] .t-gallery__caption,
+[data-theme="dark-solid"] .t-gallery__caption {
+  color: var(--ink-inv-mute);
+}
+
+/* ============================================================
+   Responsive: narrow viewports
+   ============================================================ */
+@media (max-width: 1024px) {
+  .t-cover { grid-template-rows: 55fr 45fr; }
+  .t-cover__disciplines { grid-template-columns: repeat(2, 1fr); }
+  .t-hero-intro, .t-narrative, .t-case-intro, .t-situation, .t-approach {
+    grid-template-columns: 1fr;
+    gap: var(--gap-lg);
+  }
+  .t-narrative__cards { grid-template-columns: repeat(2, 1fr); }
+  .t-stats__grid, .t-results__grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .t-gallery__grid[data-count="3"],
+  .t-gallery__grid[data-count="4"],
+  .t-gallery__grid[data-count="5"],
+  .t-gallery__grid[data-count="6"],
+  .t-gallery__grid[data-count="7"],
+  .t-gallery__grid[data-count="8"],
+  .t-gallery__grid[data-count="9"] { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .t-cover__disciplines { grid-template-columns: 1fr; }
+  .t-narrative__cards, .t-stats__grid, .t-results__grid { grid-template-columns: 1fr !important; }
+  .t-timeline__body { grid-template-columns: 1fr; }
+  .t-gallery__grid { grid-template-columns: 1fr !important; }
+}
+
+
+</style>
+</head>
+<body>
+
+<div class="deck-progress"><div class="deck-progress__bar"></div></div>
+<div class="deck-counter"></div>
+
+<section class="slide t-cover" data-slide="1" data-theme="light">
+  <div class="t-cover__top">
+    <div class="t-cover__eyebrow reveal">PORTFOLIO</div>
+    <h1 class="t-cover__hero reveal">Joe Thomas</h1>
+    <p class="t-cover__role reveal">Senior Content Strategy &amp; Experience Leader</p>
+    <div class="t-cover__accent-bar"></div>
+  </div>
+  <div class="t-cover__bottom">
+    <div class="t-cover__disciplines"><div class="reveal">Content Strategy</div><div class="reveal">Experience Strategy</div><div class="reveal">AI-Enabled Content Operations</div><div class="reveal">Information Architecture</div><div class="reveal">LLM-Aware SEO</div><div class="reveal">Engagement &amp; Delivery</div></div>
+    <div class="t-cover__contact reveal">FRANKLIN, TN   ·   JOSEPH@JSTHOMAS.ORG   ·   LINKEDIN.COM/IN/JSTHOMAS   ·   415.866.1045</div>
+  </div>
+  <footer class="footer-bar"><span>Joseph S. Thomas <span class="footer-bar__dot"></span> Franklin, TN</span><span class="footer-bar__num">01 / 86</span></footer>
+</section>
+
+<section class="slide t-hero-intro" data-slide="2" data-theme="dark">
+  <div class="t-hero-intro__text">
+    <div class="t-hero-intro__name reveal">JOE THOMAS</div>
+    <h2 class="t-hero-intro__greeting reveal">HELLO, I&#x27;M JOE.</h2>
+    <p class="t-hero-intro__role reveal">Senior Content Strategy
+&amp; Experience Leader</p>
+    <div class="t-hero-intro__bio reveal">15+ years shaping digital experiences for Fortune 500 clients across pharmaceutical, healthcare, finance, automotive, and CPG. I design content and experience strategy for complex, regulated environments — from information architecture and taxonomy to CMS-ready manuscripts, editorial governance, and AI-enabled content operations.
+
+I build LLM-aware SEO foundations, prompt libraries, and human-in-the-loop review systems that connect AI-assisted drafting with expert review at enterprise scale.</div>
+    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas <span class="footer-bar__dot"></span> HELLO, I&#x27;M JOE.</div>
+  </div>
+  <div class="t-hero-intro__portrait"><figure class="media-frame"><img data-src="assets/slide2_img1.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">02 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="3" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">WHAT I DO</div>
+    <h2 class="t-narrative__title reveal">Six disciplines. One integrated practice.</h2>
+    
+  </div>
+  <div class="t-narrative__cards" data-count="7"><article class="num-card reveal"><span class="num-card__n">01</span><h3 class="num-card__label">Content Strategy</h3><p class="num-card__desc">Audits, frameworks, editorial governance, voice &amp; tone, messaging pillars for regulated environments.</p></article>
+<article class="num-card reveal"><span class="num-card__n">02</span><h3 class="num-card__label">Experience Strategy</h3><p class="num-card__desc">Audience journeys, information architecture, taxonomy design, content modeling, CMS architecture.</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Content Design &amp; Production</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">CMS-ready manuscripts, page and module architecture, UX writing, content specifications.</h3></article>
+<article class="num-card reveal"><span class="num-card__n">04</span><h3 class="num-card__label">Search &amp; Discoverability</h3><p class="num-card__desc">Technical SEO, schema &amp; structured data, LLM-aware SEO, and zero-click GEO / AEO patterns.</p></article>
+<article class="num-card reveal"><span class="num-card__n">05</span><h3 class="num-card__label">AI-Enabled Operations</h3><p class="num-card__desc">Prompt libraries, AI-assisted audits and audience analysis, agentic drafting + expert review workflows.</p></article>
+<article class="num-card reveal"><span class="num-card__n">06</span><h3 class="num-card__label">Engagement &amp; Delivery</h3><p class="num-card__desc">SOW, P&amp;L, multi-discipline teams of 5–10, QBRs, risk management, and account growth.</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">03 / 86</span></footer>
+</section>
+
+<section class="slide t-stats" data-slide="4" data-theme="paper">
+  <div class="t-stats__head">
+    <div class="section-label reveal">BY THE NUMBERS</div>
+    <h2 class="t-narrative__title reveal">Fifteen years of measurable impact.</h2>
+  </div>
+  <div class="t-stats__grid" data-count="6"><article class="stat-card reveal"><span class="stat-card__big">15+</span><p class="stat-card__cap">Years leading enterprise
+digital engagements</p></article>
+<article class="stat-card reveal"><span class="stat-card__big">$750K+</span><p class="stat-card__cap">Largest client P&amp;L
+owned and delivered</p></article>
+<article class="stat-card reveal"><span class="stat-card__big">20+</span><p class="stat-card__cap">Successful website migrations and redesigns delivered since 2016</p></article>
+<article class="stat-card reveal"><span class="stat-card__big">6×</span><p class="stat-card__cap">Account growth for UC Davis
+Health, with one phase leading to six</p></article>
+<article class="stat-card reveal"><span class="stat-card__big">6</span><p class="stat-card__cap">Vertical expertise in Automotive, Financial Services, Healthcare, Pharmaceuticals, CPG, and SaaS</p></article>
+<article class="stat-card reveal"><span class="stat-card__big">~33%</span><p class="stat-card__cap">Reduction in timelines and level of effort with Generative AI technology</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">04 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="5" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">CLIENTS</h2></div>
+  
+  <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide5_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide5_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">05 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="6" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">HOW I WORK</div>
+    <h2 class="t-narrative__title reveal">A repeatable approach, honed over 15 years.</h2>
+    
+  </div>
+  <div class="t-narrative__cards" data-count="4"><article class="num-card reveal"><span class="num-card__n">01</span><h3 class="num-card__label">DISCOVER</h3><p class="num-card__desc">AI-assisted content audits to find what&#x27;s working and what&#x27;s missing. Interviews with subject matter experts and internal teams, audience research, persona development, competitive benchmarking, and analytics review. By the end of this phase, there&#x27;s a shared understanding of the current state and the gaps.</p></article>
+<article class="num-card reveal"><span class="num-card__n">02</span><h3 class="num-card__label">DEFINE</h3><p class="num-card__desc">Information architecture, taxonomy, content models, visual sitemaps, editorial frameworks, voice and tone guidelines, and messaging pillars. This is the structural work that determines how content gets organized and written before anyone opens a CMS.</p></article>
+<article class="num-card reveal"><span class="num-card__n">03</span><h3 class="num-card__label">DESIGN &amp; BUILD</h3><p class="num-card__desc">CMS-ready manuscripts, module architecture, UX writing, schema and structured data implementation, LLM-aware SEO, and GEO/AEO strategy. Everything built here ties back to the architecture from phase two. Nothing ships without a defined content model behind it.</p></article>
+<article class="num-card reveal"><span class="num-card__n">04</span><h3 class="num-card__label">GOVERN &amp; GROW</h3><p class="num-card__desc">Editorial workflows, MLR and compliance review, human-in-the-loop quality checks for AI-generated content, lifecycle management, and performance iteration. This phase also covers the sell-through for next phases, because organic account growth is paramount.</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">06 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="7" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">AI-FORWARD PRACTICE</div>
+    <h2 class="t-narrative__title reveal">Building content systems ready for the LLM era.</h2>
+    
+  </div>
+  <div class="t-narrative__cards" data-count="10"><article class="num-card reveal"><h3 class="num-card__label">I help clients show up in AI-generated answers, not just search results. That means rethinking how content is structured, marked up, and written.</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">— Weber Shandwick Halo · IPG —</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">LLM-AWARE SEO</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Search is splitting into two channels: traditional rankings and AI-generated citations. I build for both. Schema markup tuned for entity recognition, structured data that maps to how models retrieve and cite sources, and content architectures that answer the intent patterns LLMs surface, not just the keywords Google ranks.</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">PROMPT LIBRARIES</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Most teams using AI for content are improvising every prompt from scratch. Inconsistent output, no way to compare results. I build standardized prompt sets for content audits, audience analysis, and rendering reviews that any strategist can run and get reliable output. The prompts encode the methodology so the work scales.</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">HUMAN-IN-THE-LOOP</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">AI drafts fast but gets things wrong in ways that matter. Off-brand language, unsupported claims, regulatory violations. I design rubric-based scoring systems between AI output and publication. Each draft gets evaluated against accuracy, brand voice, and the compliance requirements of the client&#x27;s industry.</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">AGENTIC WORKFLOWS</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">The full pipeline from draft to published asset. AI handles what it&#x27;s good at, humans own what it isn&#x27;t. AI generates drafts, subject matter experts check accuracy, MLR approves for compliance, and the asset publishes through defined handoffs. Every step has clear entry and exit criteria.</h3></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">07 / 86</span></footer>
+</section>
+
+<section class="slide t-timeline" data-slide="8" data-theme="paper">
+  <div class="t-timeline__head">
+    <div class="section-label reveal">CAREER PATH</div>
+    <h2 class="t-narrative__title reveal">Fifteen+ years delivering content strategies at scale.</h2>
+  </div>
+  <div class="t-timeline__rail"><div class="t-timeline__item reveal">
+  <span class="num-oval">01</span>
+  <div class="t-timeline__body">
+    <span class="t-timeline__years">2021 – 2026</span>
+    <div><div class="t-timeline__company">OMNICOM</div><div class="t-timeline__role">SVP / VP, Content Strategy</div></div>
+    <p class="t-timeline__note">New York, NY (Remote) — Fortune 500 content &amp; experience strategy; AI-first content operations.</p>
+  </div>
+</div>
+<div class="t-timeline__item reveal">
+  <span class="num-oval">02</span>
+  <div class="t-timeline__body">
+    <span class="t-timeline__years">2018 – 2021</span>
+    <div><div class="t-timeline__company">EXPERIAN</div><div class="t-timeline__role">Global Content Strategy Lead</div></div>
+    <p class="t-timeline__note">Franklin, TN (Remote) — Global taxonomy, IA, and AEM migration leadership.</p>
+  </div>
+</div>
+<div class="t-timeline__item reveal">
+  <span class="num-oval">03</span>
+  <div class="t-timeline__body">
+    <span class="t-timeline__years">2016 – 2018</span>
+    <div><div class="t-timeline__company">DIGITAS</div><div class="t-timeline__role">Lead Content Strategist</div></div>
+    <p class="t-timeline__note">Atlanta, GA — Nissan / INFINITI, large global AEM implementation.</p>
+  </div>
+</div>
+<div class="t-timeline__item reveal">
+  <span class="num-oval">04</span>
+  <div class="t-timeline__body">
+    <span class="t-timeline__years">2014 – 2015</span>
+    <div><div class="t-timeline__company">WELLS FARGO</div><div class="t-timeline__role">Content Management Consultant</div></div>
+    <p class="t-timeline__note">San Francisco, CA — Consumer &amp; business banking digital experience.</p>
+  </div>
+</div>
+<div class="t-timeline__item reveal">
+  <span class="num-oval">05</span>
+  <div class="t-timeline__body">
+    <span class="t-timeline__years">Early career</span>
+    <div><div class="t-timeline__company">TRANSAMERICA · FUNMOBILITY · PROTIVITI · NEXTAG</div><div class="t-timeline__role">Content Strategy &amp; SEO</div></div>
+    <p class="t-timeline__note">Los Angeles · Pleasanton · San Francisco · San Mateo · Sunnyvale</p>
+  </div>
+</div></div>
+  <footer class="footer-bar"><span class="footer-bar__num">08 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="9" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">CREDENTIALS</div>
+    <h2 class="t-narrative__title reveal">Certifications &amp; education.</h2>
+    
+  </div>
+  <div class="t-narrative__cards" data-count="9"><article class="num-card reveal"><h3 class="num-card__label">CERTIFICATIONS</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">EDUCATION</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">B.A., Communication Studies</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Sonoma State University</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">CONTACT</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">joseph@jsthomas.org</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">linkedin.com/in/jsthomas</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">415.866.1045</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Content Marketing Certification, HubSpot Academy, Apr 2026Google Ads Creative Certification, Skillshop, Apr 2026Google Ads Search Certification, Skillshop, Apr 2026Campaign Manager 360 Certification, Skillshop, Apr 2026Search Ads 360 Certification, Skillshop, Apr 2026Google Analytics Certification, Skillshop, Apr 2026Conversion Optimization Certification, Skillshop, Apr 2026Advanced Certified Product Owner (A-CSPO), Scrum Alliance, Feb 2021Certified ScrumMaster (CSM), Scrum Alliance, Apr 2020Certificate in User Experience (UXC), Nielsen Norman Group, Jun 2019Certified Product Owner (CSPO), Scrum Alliance, Apr 2019</h3></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">09 / 86</span></footer>
+</section>
+
+<section class="slide t-transition" data-slide="10" data-theme="dark">
+  <div class="t-transition__part reveal">PART ONE</div>
+  <h2 class="t-transition__title reveal">My Process</h2>
+  
+  <footer class="footer-bar"><span class="footer-bar__num">10 / 86</span></footer>
+</section>
+
+<section class="slide t-transition" data-slide="11" data-theme="dark">
+  
+  
+  <p class="t-transition__body reveal">My processes can be tailored by project type to accommodate a range of solutions and budgets. The process illustrated over the next set of slides contains typical steps for a large-scale website, application, or omnichannel experience. I have also included behind-the-scenes snapshots of key steps within the process.</p>
+  <footer class="footer-bar"><span class="footer-bar__num">11 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="12" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">TARGET AUDIENCES</div>
+    <h2 class="t-narrative__title reveal">AUDITS &amp; ANALYSIS</h2>
+    
+  </div>
+  <div class="t-narrative__cards" data-count="13"><article class="num-card reveal"><h3 class="num-card__label">ORGANIC SEARCH BEHAVIOR</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">1ST PARTY DATA</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">DIGITAL JOURNEYS &amp; USER NEEDS</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Competitive Landscape</h3><p class="num-card__desc">Channel / Platform
+Analytics / Data Insights
+Content, UX, &amp; Design Evaluation</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Search Behavior Analysis</h3><p class="num-card__desc">Search Volume Analysis</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Segmentation</h3><p class="num-card__desc">User Research
+User Journey</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">My Process</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Test &amp; Learn</h3><p class="num-card__desc">Surveys and PollsFeedback Mechanisms</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Matching audience needs to features &amp; functionality</h3><p class="num-card__desc">Defining the cross-channel user journey</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">STRATEGIC</h3><p class="num-card__desc">FRAMEWORK &amp; ROADMAP</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">DESIGN &amp; DEVELOPMENT EXECUTION</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Vision &amp; Experience Strategy</h3><p class="num-card__desc">Content &amp; Editorial Strategy 
+Feature Concepts 
+Roadmap</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Wireframes</h3><p class="num-card__desc">Prototypes 
+Design Systems 
+Development 
+UAT</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">12 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="13" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">My Data-Driven, User-Centric Approach</div>
+    <h2 class="t-narrative__title reveal">1</h2>
+    <div style="display:flex;flex-direction:column;gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide13_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide13_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide13_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide13_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide13_img5.png" alt="" loading="lazy"></figure></div>
+  </div>
+  <div class="t-narrative__cards" data-count="6"><article class="num-card reveal"><h3 class="num-card__label">ONBOARDING, GOALS &amp; OBJECTIVES</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Outlines the priorities, requirements, and overall goals of the project. Establishes roles, responsibilities, and expectations. Includes document review, client interviews, technical audit and analysis.</h3></article>
+<article class="num-card reveal"><span class="num-card__n">2</span><h3 class="num-card__label">PLATFORM AUDIT &amp; ANALYSIS</h3><p class="num-card__desc">Draws out relevant needs, opportunities, behaviors, and desires based on a detailed UX, design, and content inventory, audit, and analysis mixed with available site analytics, search behavior analysis, usability testing, and any other data sources.</p></article>
+<article class="num-card reveal"><span class="num-card__n">3</span><h3 class="num-card__label">CONTENT AUDIT &amp; ANALYSIS</h3><p class="num-card__desc">Qualitative and quantitative audit and analysis of existing content. Provides a picture of the current communications platform including owned channels and channels of similar organizations.</p></article>
+<article class="num-card reveal"><span class="num-card__n">4</span><h3 class="num-card__label">PERSONA + JOURNEY DEVELOPMENT</h3><p class="num-card__desc">Defines key audience personas, journeys, and user needs adding in data-driven attributes to provide the most accurate depiction of those that will consume and engage with the content and experience.</p></article>
+<article class="num-card reveal"><span class="num-card__n">5</span><h3 class="num-card__label">VISION &amp; STRATEGIC FRAMEWORK</h3><p class="num-card__desc">Establishes a clearly-defined vision, content + editorial strategy, experience strategy, SEO / SEM approach to content creation, as well as feature set requirements, drawing on data-informed insights from earlier in the process.</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">13 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="14" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">My Data-Driven, User-Centric Approach</div>
+    <h2 class="t-narrative__title reveal">6</h2>
+    <div style="display:flex;flex-direction:column;gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide14_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide14_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide14_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide14_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide14_img5.png" alt="" loading="lazy"></figure></div>
+  </div>
+  <div class="t-narrative__cards" data-count="6"><article class="num-card reveal"><h3 class="num-card__label">SITE STRUCTURE</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Establish the site architecture (sitemap and site shell) based on approved and aligned upon features and requirements.</h3></article>
+<article class="num-card reveal"><span class="num-card__n">7</span><h3 class="num-card__label">DESIGN PLAN</h3><p class="num-card__desc">Defines templates, components, design batches, the review process, and timeline for wireframes, designs, and development.</p></article>
+<article class="num-card reveal"><span class="num-card__n">8</span><h3 class="num-card__label">DIGITAL DESIGN SYSTEM</h3><p class="num-card__desc">Sets the voice and tone, color, typography, illustration, imagery, photography, color palette, and user interface elements. This could be based on an existing brand style guide or created from scratch.</p></article>
+<article class="num-card reveal"><span class="num-card__n">9</span><h3 class="num-card__label">WIREFRAMES, DESIGN &amp; COPY</h3><p class="num-card__desc">Defines the structure, functionality, content, and visual design at the template and component level, based on the approved features, structure, and design plan. This often includes a copy deck and metadata recommendations.</p></article>
+<article class="num-card reveal"><span class="num-card__n">10</span><h3 class="num-card__label">BUILD KIT &amp; DEVELOPMENT</h3><p class="num-card__desc">Creation of all required build kit assets (annotations, designs, copy deck, style guide, analytics tagging specifications, SEO documentation, etc.) development guidance, and support to build the experience against my specifications.</p></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">14 / 86</span></footer>
+</section>
+
+<section class="slide t-narrative" data-slide="15" data-theme="paper">
+  <div class="t-narrative__intro">
+    <div class="section-label reveal">My Data-Driven, User-Centric Approach</div>
+    <h2 class="t-narrative__title reveal">11</h2>
+    <div style="display:flex;flex-direction:column;gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide15_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide15_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide15_img3.png" alt="" loading="lazy"></figure></div>
+  </div>
+  <div class="t-narrative__cards" data-count="6"><article class="num-card reveal"><h3 class="num-card__label">MEASUREMENT FRAMEWORK &amp; TAGGING</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">Sets the project up for success by establishing KPIs, analytics event tagging specifications, and measurement framework to ensure I can measure the right things to help make data-informed decisions and adjustments post-launch.</h3></article>
+<article class="num-card reveal"><span class="num-card__n">12</span><h3 class="num-card__label">DEVELOPMENT &amp; CONTENT MIGRATION</h3><p class="num-card__desc">Builds a working website from the designs and previous site mapping work. (or I can partner with client-side IT or development teams to build this site within an existing infrastructure).</p></article>
+<article class="num-card reveal"><span class="num-card__n">13</span><h3 class="num-card__label">QA, UAT, &amp; LAUNCH</h3><p class="num-card__desc">Provides quality assurance and user acceptance testing of all key systems, designs, and content ahead of the launch to ensure a stable and fully-functional experience.</p></article>
+<article class="num-card reveal"><h3 class="num-card__label">Ideally, pending scope, I iterate, measure, optimize, and expand from this point forward dependent on user data and client needs.</h3></article>
+<article class="num-card reveal"><h3 class="num-card__label">BEYOND</h3></article></div>
+  <footer class="footer-bar"><span class="footer-bar__num">15 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="16" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Intake &amp; Requirements</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Internal Brief, Workback Plan (Smartsheet), and Solution Plan</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Synthesized discovery brief
+Business objectives
+Project north star and inspiration
+Areas of focus and exploration
+Technical mandatories
+Plan of action</p>
+  <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide16_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide16_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">16 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="17" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Client Workshops</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Digital Whiteboard &amp; Synthesized Findings</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Goals and objectives for the design 
+Audience identification and prioritization 
+Initial onboarding questions 
+Mandatories and requirements 
+Current and future initiatives that could affect the website 
+Pain points and needs related to the current websites 
+What success looks like</p>
+  <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide17_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide17_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide17_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide17_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">17 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="18" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Analytics Audit and Analysis</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Who is visiting the properties? 
+When are they visiting and on what devices? 
+What are the top performing pages and content? 
+What content and features are most highly engaged?
+What are their journeys within and between digital properties? 
+What are the regional nuances in site traffic and engagement?</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide18_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide18_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide18_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">18 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="19" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Search Audit and Analysis</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">How are visitors finding these properties? 
+Where are they coming from? 
+What are the search behaviors for target audiences? 
+What are top questions being asked in the space? 
+What are keywords or phrases I can own? 
+How does it differ by region?</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide19_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide19_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide19_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">19 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="20" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content and UX Inventory</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Current State Assessment</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What features functionality, and content exist in the platform?
+What tools, services, and data feeds exist in the platform 
+Functionality and content for specific features on comparable or competitive experiences 
+Opportunities and gaps in how features and content match-up with community audience needs</p>
+  <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide20_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide20_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide20_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide20_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">20 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="21" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Audience Research</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Synthesized Research</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What are my visitors trying to achieve? 
+What hurdles are they experiencing? 
+What are their expectations for content and features?
+What demographic information will they share? 
+How might I begin to categorize my visitors and review their responses in a structured way?</p>
+  <div class="t-gallery__grid" data-count="5"><figure class="media-frame"><img data-src="assets/slide21_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide21_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide21_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide21_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide21_img5.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">21 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="22" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Personas and Journeys</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Profiles and Journey Maps</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Key mindsets, needs, goals, and current pain-points
+Content, features, experiences, and resources that best meet audience needs
+Opportunities to engage with target audiences over time across touchpoints</p>
+  <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide22_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">22 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="23" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Experience Strategy</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Strategic Framework</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Experience imperatives or principles
+Short-term vision 
+Long-term vision
+Feature definition &amp; requirements</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide23_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide23_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide23_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">23 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="24" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Omnichannel Strategy</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Content and Channel Strategy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Content Themes &amp; Pillars
+Content Needs &amp; Opportunities
+Content Formats &amp; Style
+Content Distribution Channels
+Governance and Workflow Guidelines</p>
+  <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide24_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide24_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide24_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide24_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">24 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="25" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Organic Search Recommendations</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Site Optimization Recommendations</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Striking Distance Keywords
+New Keyword Opportunities
+Backlink Recommendations 
+Site Performance Recommendations</p>
+  <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide25_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide25_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">25 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="26" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Sitemap and Taxonomy</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Visual &amp; Excel Sitemap</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">The sitemap is a representation of the full platform architecture. It accounts for all pages, content, tools, and actions that need to live within the system. It shows how sections and pages are organized, their hierarchy, and where key content lives within the structure.</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide26_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide26_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide26_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">26 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="27" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Systems</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Digital Design System</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Voice and tone 
+Color and typography 
+Imagery and illustration 
+User interface elements 
+Motion and animation
+Site shell (header, footer, nav)</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide27_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide27_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide27_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">27 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="28" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Execution</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Design Prototypes</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Grounded in the features and requirements defined in the previous phases, execution moves swiftly. I create digital experiences that are high performing, beautiful, and functional, while faithfully representing the brand.</p>
+  <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide28_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide28_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide28_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">28 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="29" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Production</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Copy Deck &amp; Guidelines</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Creating end-to-end content, from ideation and keyword research to writing on-brand content. My process simplifies client reviews and approvals, ensuring every piece of copy is strategically aligned and resonates with your target audience.</p>
+  <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide29_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide29_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">29 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="30" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Governance</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Workflows, Process Documents, and Governance Frameworks</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">I create Governance Plans that establish the framework for managing content creation, approval, publication, and maintenance to ensure consistency, quality, and compliance. I also create Content Lifecycle Plans that outline the stages through which content passes from creation to archiving. This plan ensures that content remains relevant, accurate, and valuable over time.</p>
+  <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide30_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide30_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">30 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="31" data-theme="dark">
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Creative Social and Paid</h2></div>
+  <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
+Paid &amp; Organic Creative + Copy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Paid media assets
+Social media assets
+Graphic elements and creative exploration
+Print media needs and resources</p>
+  <div class="t-gallery__grid" data-count="5"><figure class="media-frame"><img data-src="assets/slide31_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide31_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide31_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide31_img4.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide31_img5.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">31 / 86</span></footer>
+</section>
+
+<section class="slide t-transition" data-slide="32" data-theme="dark">
+  
+  
+  <p class="t-transition__body reveal">My process is built around audience data, tight timelines, and budget discipline. Projects ship on time.</p>
+  <footer class="footer-bar"><span class="footer-bar__num">32 / 86</span></footer>
+</section>
+
+<section class="slide t-transition" data-slide="33" data-theme="dark">
+  <div class="t-transition__part reveal">PART TWO</div>
+  <h2 class="t-transition__title reveal">Case Studies</h2>
+  <p class="t-transition__body reveal">Nine selected engagements across pharmaceutical, healthcare, finance, automotive, and CPG.</p>
+  <footer class="footer-bar"><span class="footer-bar__num">33 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="34" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">UC DAVIS HEALTH</h2>
+    <p class="t-case-intro__tagline reveal">Re-imagining the owned digital experience for an academic health system</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Content strategy, taxonomy, and IA across a multi-client academic health system.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">WEBSITE REDESIGN</span><span class="pill pill--goal reveal">GOVERNANCE</span><span class="pill pill--goal reveal">GLOBAL TAXONOMY</span></div>
+  </div>
+  
+  <footer class="footer-bar"><span class="footer-bar__num">34 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="35" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">UC Davis Health is a leading, nationally ranked academic health system that tackles the world’s most pressing healthcare issues. They provide patient care, research trailblazing therapies, and offer world-class medical education. Their owned digital platform is a collection of academic, clinical, and research department microsites, each with their own client leads and goals. The site architecture and navigation was largely based on internal organizational structure, department initiatives, and leadership requests, creating siloed experiences that made it difficult for their priority audiences, including prospective patients, referring physicians, and prospective residents, to navigate to relevant content easily. They needed a phased and systematic process to overhauling their site, that could get buy-in from across the organization.</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Content strategy, taxonomy, and IA across a multi-phase redesign. Grew the account from one phase to six.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">New Patient Acquisition</span><span class="pill pill--goal reveal">Elevate National Reputation</span><span class="pill pill--goal reveal">Illustrate Research &amp; Clinical Solutions</span><span class="pill pill--goal reveal">Recruit Residents, Faculty &amp; Fellows</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide35_img1.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">35 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="36" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">MY APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Partnering with their internal marketing team, I took an audience-centered and data-driven approach to re-imagining the UC Davis site network over several phases, ultimately providing the team with a revised design system, new templates, tools, and governance guidelines that they have used to develop and roll out across the site, giving all site editors the ability to create on-brand and engaging content. The process started with multiple rounds of interviews with department heads, followed by deep content, experience, and performance audits, multiple rounds of diagnostic user testing, as well as prototype and tree-testing new designs and navigational models. These critical data inputs were used to inform a system-wide new vision, features, and revised approach to their global taxonomy.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide36_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">36 / 86</span></footer>
+</section>
+
+<section class="slide" data-slide="37" data-theme="dark" style="padding:var(--pad-slide);display:flex;flex-direction:column;gap:var(--gap-lg);justify-content:center">
+  <h2 class="reveal" style="font-family:var(--font-display);font-size:var(--t-h2);font-style:italic;color:var(--blue-400);max-width:50ch">I have transformed the digital experience…</h2>
+  <div class="ft-grid reveal">
+    <div class="ft-panel ft-panel--from"><div class="ft-panel__label">FROM</div><p style="font-size:var(--t-small);line-height:1.5">An organization-centric experience with long form content, containing limited pathways for priority audiences (patients, prospective residents, fellows, faculty, and referring physicians) to quickly get to relevant information, services, and programs. Users were often taken directly to department sites, without clear connections or guidance, causing friction and disorientation.</p></div>
+    <span class="ft-arrow">→</span>
+    <div class="ft-panel ft-panel--to"><div class="ft-panel__label">TO</div><p style="font-size:var(--t-small);line-height:1.5">A cohesive and smooth audience-focused experience with intuitive navigation and scannable content that guides users to health information, services, academic programs and resources, while answering questions and providing clear paths to getting support.</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide37_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide37_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide37_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide37_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">37 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="38" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">SITEWIDE NAVIGATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Solves for the relationships between sub-brands, departments and units, allowing the move through the health system in intuitive ways.
+SITEWIDE TAXONOMY
+I defined new content types and global taxonomy, enabling dynamic content.
+HEALTH LIBRARY
+Allows easier pathways towards care and resources, while increasing search equity and communicating key differentiators
+CLINIC FINDER TOOL
+New finder and detail pages migrate previous static location information into a dynamic experience that provides the ability to quickly find relevant clinics and services.
+NEW CONTENT MODULES
+I created new content modules and components, for a more scannable reading experience. DYNAMIC LISTING PAGES
+Searchable with lettered side navigation allow audiences to quicklytarget relevant programs, conditions, treatments, and services.
+ACTION MODULES
+These modules elevate and organize the most important actions for audiences.
+ACADEMIC PROGRAM PAGES
+Provide an overview of the residency, rotations, current residents, reasons to believe, and easy access to apply for a specific academic program.</p>
+<div class="section-label reveal">SOLUTION &amp; RESULTS</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I delivered a new global navigation model, site templates, governance guidelines, and workflows to be leveraged across the organization. Key features and improvements include:</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I delivered scalable features and tools to equip internal teams</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide38_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide38_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide38_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide38_img4.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide38_img5.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">38 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="39" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">RECENT LAUNCH DATA</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Initial data from the recent launch of the new Patients &amp; Visitors site.</p>
+<div class="section-label reveal">USER SATISFACTION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">On average, the users tested were very satisfied with the new experience.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">“</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I delivered scalable features and tools to equip internal teams</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">It was very intuitive, very user friendly, and well organized. YOUR website is very informative as well.
+Prospective Heart Health Patient</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Average Time On Site</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">63</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Appointment Page Visits</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">138</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">New Organic Traffic to Health Library</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">47</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide39_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img6.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img7.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">39 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="40" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide40_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide40_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide40_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide40_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide40_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide40_img6.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">40 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="41" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">CDC</h2>
+    <p class="t-case-intro__tagline reveal">Digital-first transformation, communication, and redesign</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">A multi-year content audit, sitemap redesign, and IA overhaul for a high-compliance public health environment.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">WEBSITE REDESIGN</span><span class="pill pill--goal reveal">CONTENT WORKFLOWS</span><span class="pill pill--goal reveal">CONTENT &amp; ASSET CREATION</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide41_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">41 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="42" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The United States Center for Disease Control and Prevention (CDC) Department of Viral Hepatitis (DVH) engaged my team to evolve and redesign their website, better ensuring a user-centered experience consistent with their strategic objectives. Midway through my engagement with DVH, CDC announced “Clean Slate”, an agency-wide directive to rethink, rewrite, and relaunch a new, improved, and redesigned CDC.gov website — all within the span of a year. Now, I needed to help DVH execute the Clean Slate directive to rewrite and re-platform their entire site while still delivering on the initial goals of their site evolution.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Content Consolidation</span><span class="pill pill--goal reveal">Plain-Language Compliance</span><span class="pill pill--goal reveal">Simplify Taxonomy &amp; IA</span><span class="pill pill--goal reveal">Brand Redesign</span><span class="pill pill--goal reveal">Content Workflows</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide42_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide42_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">42 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="43" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">MY APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I executed thorough user testing on the DVH site to understand how both health care providers and public audiences reacted to website content, organization, and flow. Taking insights from user testing, I then audited the entire site from a content strategy, UX, SEO, and analytics lens to recommend a brand-new sitemap that adhered to Clean Slate’s limitations, templates, and site model expectations. I shepherded DVH through a massive project to rewrite 117 pages over a 6-month period, all of which needed to be cleared through communications and scientific leads at the CDC.</p>
+<div class="section-label reveal">THE RESULTS</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">User testing outputs that delivered powerful insights guiding my future content and sitemap evolution 
+1,300+ page site audit concluded with a 75% reduction in URL count, gaining DVH operational efficiencies in site maintenance with no impact to site traffic or user experience 
+117 pages rewritten over a 6-month period to hit the Clean Slate relaunch date, all of which needed to be cleared through communications and scientific leads at CDC</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide43_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide43_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">43 / 86</span></footer>
+</section>
+
+<section class="slide" data-slide="44" data-theme="dark" style="padding:var(--pad-slide);display:flex;flex-direction:column;gap:var(--gap-lg);justify-content:center">
+  <h2 class="reveal" style="font-family:var(--font-display);font-size:var(--t-h2);font-style:italic;color:var(--blue-400);max-width:50ch">I have transformed the digital experience…</h2>
+  <div class="ft-grid reveal">
+    <div class="ft-panel ft-panel--from"><div class="ft-panel__label">FROM</div><p style="font-size:var(--t-small);line-height:1.5">A center and internally focused website with highly complex, dense content that isn’t tailored to their respective audiences. The site was ridden with duplicate content and assets, a result of the ”publish and forget” tone of the organization. Content contained conflicting information, outdated statistics, and lacked structure. Pages were not scannable and lacked a sense of uniformity.</p></div>
+    <span class="ft-arrow">→</span>
+    <div class="ft-panel ft-panel--to"><div class="ft-panel__label">TO</div><p style="font-size:var(--t-small);line-height:1.5">A uniform, audience-centric experience with a global taxonomy that culminates in an intuitive topic-specific navigation framework and smoothly connects audiences to relevant health topics. Breaking down organizational silos in lieu for a network of websites centered around plain language queries.</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide44_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide44_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide44_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide44_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide44_img5.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">44 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="45" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">CONTENT MODELS</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Developed division-specific content models for their core content pages, creating a consistent and streamlined experience across audiences.
+GLOBAL TAXONOMY
+I defined a new global taxonomy for the division that connects audiences with relevant information, reducing the chances of user abandonment.
+
+CONTENT REDUCTION
+Significantly reduced content volume and duplicative pages. Consolidating similar pages and purging outdated information to create funneled user journeys.
+STRUCTURED DATA
+The new experience prioritizes modular components, paired with uniform headings and hierarchy. Helping audiences easily scan pages across the CDC site.
+DYNAMIC RESOURCES
+Transition from static resources to a dynamic, filterable, and searchable experience. While grouping audience and language versions for easier browsing.
+
+PLAIN LANGUAGE
+Transition from highly clinical and complex content to easily readable prose that is tailored to audiences. Creating a scannable, easy to digest experience.</p>
+<div class="section-label reveal">USER CENTRIC</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I delivered over 5 new site models leveraging uniform content templates across over 3 disease areas across patient, healthcare provider, and public health audiences.</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">New content models and templates to address patient, provider, and public health audiences</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide45_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide45_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">45 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="46" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">CONTENT INVENTORY</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I compiled all content sources to create a master inventory inclusive of all pages, PDFs, and assets. Using site analytics and SEO data to make informed recommendations.
+
+CLIENT REVIEW
+Working with CDC division leaders and communicators, facilitate the review of manuscripts. Inclusive of managing conflicting and sometimes technical feedback.
+CONTENT AUDIT
+Liaise with client leads to identify pages and assets to keep, improve, or remove. Conducting workshops to help the division make data and insight-driven decisions.
+
+SME REVIEW
+Once content was entered in the CMS and undergone QA, facilitate the review of pages with division subject matter experts. Addressing feedback until the page was approved.
+
+CONTENT PLANNING
+Establish clear messaging hierarchy via template-specific page models. Culminating in content outlines and manuscript shells for writers to populate and revise.</p>
+<div class="section-label reveal">CLIENT FACING</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I worked with client leads to facilitate the planning, creation, and review of content across the project lifecycle leveraging complete, custom workflows.</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I developed reliable workflows to facilitate content review and publishing at scale</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide46_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide46_img2.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">46 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="47" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">ACADIA</h2>
+    <p class="t-case-intro__tagline reveal">A global website redesign that aligns to 30 years of innovation</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Reimagined the corporate digital presence as the tangible illustration of three decades of innovation.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">WEBSITE STRATEGY</span><span class="pill pill--goal reveal">REDESIGN</span><span class="pill pill--goal reveal">RE-PLATFORMING</span><span class="pill pill--goal reveal">DEVELOPMENT</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide47_img1.wmf" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">47 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="48" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">For more than 30 years, Acadia has been trailblazing breakthroughs for people with neurological conditions. They developed and commercialized the first and only approved treatment for hallucinations and delusions associated with Parkinson’s disease psychosis, and Rett syndrome. 
+Acadia’s existing website was outdated, heavily clinical, and static, failing to connect with patients and provide a complete view of the company. To reflect the ‘new’ Acadia, they needed a new corporate website that embodies their new brand, providing the flexibility to grow with the organization for years to come.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Employee Recruitment</span><span class="pill pill--goal reveal">Patient Advocacy</span><span class="pill pill--goal reveal">Showcase Innovation &amp; Pipeline</span><span class="pill pill--goal reveal">Build Industry Partnerships</span><span class="pill pill--goal reveal">Community Outreach</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide48_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">48 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="49" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SOLUTION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The new Acadia.com is the tangible illustration of the research and progress Acadia is making, with stories, insights, and information demonstrating why the new solutions matter to patients. The site balances clinical and patient-focused content with rich interactive features and stories within a user-centric architecture that is easy to navigate.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Employee Recruitment</span><span class="pill pill--goal reveal">Patient Advocacy</span><span class="pill pill--goal reveal">Showcase Innovation &amp; Pipeline</span><span class="pill pill--goal reveal">Build Industry Partnerships</span><span class="pill pill--goal reveal">Community Outreach</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide49_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">49 / 86</span></footer>
+</section>
+
+<section class="slide" data-slide="50" data-theme="dark" style="padding:var(--pad-slide);display:flex;flex-direction:column;gap:var(--gap-lg);justify-content:center">
+  <h2 class="reveal" style="font-family:var(--font-display);font-size:var(--t-h2);font-style:italic;color:var(--blue-400);max-width:50ch">Transforming the Acadia corporate digital presence</h2>
+  <div class="ft-grid reveal">
+    <div class="ft-panel ft-panel--from"><div class="ft-panel__label">FROM</div><p style="font-size:var(--t-small);line-height:1.5">A website that just covers the basics, feels outdated and static, doesn’t provide visitors the whole picture of who Acadia is, and fails to connect with patients.</p></div>
+    <span class="ft-arrow">→</span>
+    <div class="ft-panel ft-panel--to"><div class="ft-panel__label">TO</div><p style="font-size:var(--t-small);line-height:1.5">A website that is the tangible illustration of the research and progress Acadia is making, with stories, insights, and information demonstrating why the new solutions matter to patients.</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide50_img1.tiff" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide50_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide50_img3.tiff" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide50_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">50 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="51" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">POSITIVE RESULTS</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Overall increase in pageviews, users, organic clicks, and impressions. Referral Sources sessions increased by 3.6%.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I delivered features that fulfilled previously unmet audience needs</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic clicks</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">39</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY FEATURES</p>
+<div class="section-label reveal">INTERACTIVE PRODUCT PIPELINE</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The new filterable pipeline quickly visualizes the progress Acadia is making. Users can click cards that link to more information and resources.
+INSIGHTS &amp; STORIES HUB
+This section brings together thought leadership, R&amp;D, patient stories, and innovation into a rich editorial experience that brings Acadia to life.
+THERAPEUTIC AREA PAGES
+These pages were evolved to be more complete views of the disease, connecting to pipeline items and resources for patients.
+LEADERSHIP PROFILES
+Content-rich profiles give a full picture of Acadia&#x27;s people, their expertise and thought leadership.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">YOY Pageview Increases</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">201</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic impressions</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">84</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">YOY user increase</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">75</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide51_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide51_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">51 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="52" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide52_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide52_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide52_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide52_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide52_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide52_img6.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">52 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="53" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">MARS</h2>
+    <p class="t-case-intro__tagline reveal">Connect and inspire through dynamic digital storytelling and meaningful engagement</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Designed the content architecture and migration strategy consolidating 34 global sites. Secured $500K additional funding.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">GLOBAL WEBSITE REDESIGN</span><span class="pill pill--goal reveal">PRODUCT ROADMAP</span><span class="pill pill--goal reveal">CREATIVE ASSETS</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide53_img1.wmf" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">53 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="54" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">BACKGROUND</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Mars is a private and family-owned business that owns some of the world&#x27;s most recognizable brands across 3 core business units in Petcare, Snacking, and Nutrition. Touching every aspect of the product supply chain, Mars operates in 450+ locations in 80 different countries, and supports native local languages on their market destinations. 
+Over the past several years, I have partnered with Global communications, Brand, and Marketing teams at Mars as well as integrated partners, to support severallarge initiatives, including a full-scale site redesign, global site architecture, ongoing digital roadmap, brand storytelling, DE&amp;I, Sustainability, and paid media planning, strategy and content.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide54_img1.wmf" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide54_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide54_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">54 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="55" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">ENGAGEMENT</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Across all my work I have helped Mars build a positive reputation by revolutionizing the Mars digital experience through dynamic storytelling that engages my target audiences in meaningful ways across my digital properties. Throughout my multi-year partnership, I’ve developed thousands of creative assets for the brand. Key engagements include: 
+Led the digital strategy, and supporting discovery and user research to inform a three year+ roadmap 
+Created a “One Mars.com” product team with strong processes, tools, and team collaboration 
+Established the market website architecture restructure for best-in-class global to local approach 
+Created a digital experience leveraging Site Studio (CMS), making it faster and easier to manage and govern content for Mars.com and market sites 
+Evolved Mars.com experience and creative with 15+ new pages, new site navigation, over 500 creative assets and new immersive experiences (e.g., interactive sustainability storytelling) and launching a complete set of 45 new components and features</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide55_img1.wmf" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide55_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide55_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">55 / 86</span></footer>
+</section>
+
+<section class="slide" data-slide="56" data-theme="dark" style="padding:var(--pad-slide);display:flex;flex-direction:column;gap:var(--gap-lg);justify-content:center">
+  <h2 class="reveal" style="font-family:var(--font-display);font-size:var(--t-h2);font-style:italic;color:var(--blue-400);max-width:50ch">Revolutionizing the Mars digital experience</h2>
+  <div class="ft-grid reveal">
+    <div class="ft-panel ft-panel--from"><div class="ft-panel__label">FROM</div><p style="font-size:var(--t-small);line-height:1.5">A limited, static, and outdated experience with a single-minded focus on brand equity initiatives and corporate communications priorities, containing long-form content, few visuals, dead-ends and little brand information.</p></div>
+    <span class="ft-arrow">→</span>
+    <div class="ft-panel ft-panel--to"><div class="ft-panel__label">TO</div><p style="font-size:var(--t-small);line-height:1.5">A strong, interactive, and multi-faceted digital experience that tells the story of the whole company—its people, products, services, and purpose, engaging target users in ways that drive them to the right content and resources.</p></div>
+  </div>
+  <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(180px,1fr));gap:var(--gap-sm)"><figure class="media-frame"><img data-src="assets/slide56_img1.wmf" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide56_img2.tiff" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide56_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide56_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide56_img5.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">56 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="57" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">DIGITAL REVOLUTION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Revolutionizing the Mars.com digital experience through dynamic storytelling and new features that engage the target audiences in meaningful ways.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I have consistently delivered positive results</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Mars.com visitors</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">36</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">More visits from social media</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">74</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic search visitors</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">15</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">News and stories visitors</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">45</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Female Mars.com visitors</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">20</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Search result placement increase</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">74</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide57_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img2.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img6.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img7.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">57 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="58" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">EROXON</h2>
+    <p class="t-case-intro__tagline reveal">Destigmatizing ED and delivering hope to men living with ED via the first OTC treatment in the US</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Launched the first FDA-cleared OTC gel for ED in the U.S. market with an empathetic, user-focused digital experience.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">U.S. WEBSITE REDESIGN</span><span class="pill pill--goal reveal">CRM PROGRAM</span><span class="pill pill--goal reveal">CREATIVE ASSETS</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide58_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">58 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="59" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Eroxon, the first FDA-cleared over-the-counter (OTC) gel for erectile dysfunction (ED), aimed to establish a strong presence in the U.S. market with its launch scheduled for Q4 2024. My challenge was to develop a pre-launch landing page and a complete website that effectively communicates the product’s unique benefits, educates consumers, and resonates with men experiencing ED as well as their partners. This digital initiative needed to differentiate Eroxon from traditional ED treatments while building trust and engagement within a competitive landscape dominated by oral medications.
+THE OPPORTUNITY
+The launch of Eroxon in the U.S. market presented a unique opportunity to introduce a revolutionary, non-invasive ED treatment that offers rapid results without the side effects associated with oral medications. Unlike its competitors, Eroxon works within 10 minutes, making it ideal for spontaneous use, and is designed to be discreet and easy to apply. The challenge was to clearly communicate these benefits while addressing common concerns around efficacy and safety, and to engage both users and their partners in a meaningful way.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide59_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide59_img2.gif" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">59 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="60" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">My approach to the Eroxon launch centered on creating an educational, empathetic, and user-focused digital experience that highlighted the product’s unique features while addressing the emotional and relational aspects of ED. The pre-launch landing page built anticipation and drove pre-orders with streamlined navigation, clear calls-to-action, and benefit-focused messaging. For the full site launch, I added a thorough content library on ED causes, symptoms, and treatments to give users the knowledge they need in a positive, reassuring tone. I also engaged partners of ED patients through articles on the impact of ED on relationships and ways to offer support. Additionally, an FAQ section addressed common safety and efficacy concerns, ensuring users had the information needed to make informed decisions.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">New Product Launch</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Multi-User Engagement</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide60_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide60_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">60 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="61" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Immediately upon launch, I achieved a strong reach with incredible results</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY FEATURES AND RESULTS</p>
+<div class="section-label reveal">INTERACTIVE COMPARISON TOOL</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Equips users to compare Eroxon with other ED treatments side-by-side, highlighting key advantages. This tool helps users make informed decisions with a clear understanding of how Eroxon stands out.
+
+PARTNER-INCLUSIVE CONTENT AND JOURNEYS
+The site features dedicated resources and articles for partners of ED patients, addressing the emotional and relational aspects of ED. This content is designed to foster communication and intimacy between partners.
+
+INTERACTIVE ENGAGEMENT TOUCHPOINTS AND TOOLS
+The website incorporates interactive elements, such as a product comparison tool and FAQs, making it easy for users to explore and understand the benefits of Eroxon compared to other ED treatments.
+
+STUNNING, BOUNDARY-PUSHING DESIGNS
+Delivers a visually engaging and smooth user experience that pushes the limits of the Haleon Web Framework. The design is modern and interactive, ensuring users enjoy a consistent and aesthetically pleasing journey across all devices.
+
+FULL USER EDUCATION
+The site provides extensive educational content on ED, including its causes, symptoms, and treatment options, helping users make informed decisions. The content is designed to be empathetic and informative, catering to both men and their partners.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide61_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide61_img2.gif" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">61 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="62" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide62_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide62_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide62_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide62_img4.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">62 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="63" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="5"><figure class="media-frame"><img data-src="assets/slide63_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide63_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide63_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide63_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide63_img5.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">63 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="64" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">NICORETTE MYQUIT</h2>
+    <p class="t-case-intro__tagline reveal">Redesigning the MyQuit smoking cessation program for a new generation</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Integrated MyQuit into Nicorette.com for one smooth cessation experience.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">OMNICHANNEL STRATEGY</span><span class="pill pill--goal reveal">DUAL BRAND INTEGRATION</span><span class="pill pill--goal reveal">CONTENT AUDIT</span><span class="pill pill--goal reveal">PRODUCT DESIGN</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide64_img1.wmf" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">64 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="65" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Nicorette has been stepping up its game with new gums, chews and lozenges, but their MyQuit program was stuck in the past – literally. Originally designed to help smokers quit, it had evolved haphazardly and piecemeal, becoming a tangled web of outdated applications, clunky websites, and confusing logged in experiences. 
+Users found themselves lost in a maze of mismatched designs, redundant content, and overlapping platforms— trying to piece together an experience that simply didn&#x27;t work anymore. For modern smokers ready to take the leap, the program felt more like a blocker than a helping hand. It was clear: MyQuit needed a serious refresh to meet today’s standards and truly support quitters on their journey.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Program Education</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide65_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide65_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide65_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">65 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="66" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">After an extensive evaluation of the current Nicorette and MyQuit platforms, I outlined redundancies within the program—from a platform, content, and experience perspective.
+Through that evaluation, I documented all content and experiences within the broken platform and outlined what was working, what wasn’t – and what should be migrated over into the new experience. 
+I mapped out content and experiences to users at various stages of their quit smoking journey using both existing content as well as new gamification, tracking, and behavioral support tools. This full omnichannel experience, paired with a new visual identity, delivers on the current needs of users looking to quit smoking.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Program Education</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide66_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide66_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide66_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">66 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="67" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">New features, platforms, content, and experiences to help users throughout their quit journey</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY IMPLEMENTATIONS</p>
+<div class="section-label reveal">INTEGRATION INTO NICORETTE.COM</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">As FDA standards were adjusted, I quickly determined that the Quit.com microsite, content, and logged-in experience needed to be incorporated into the Nicorette.com site. This absorption allowed one complete, streamlined experience for both cessation support AND product purchase.
+
+A NEW MYQUIT VISUAL EXPERIENCE
+With the new launch, I developed a fresh, new brand that not only brought the program into the 21st century, but also paired well with the new Nicorette rebrand that had recently been implemented.
+
+JOURNEY STATES FOR ALL STATES OF SMOKING CESSATION
+A smoker’s journey to quit is never linear –I made sure to identify, evaluate, and incorporate content, features, and platforms for all stages of a user’s journey from ready to quit, not quite ready, and even relapse journeys.
+TOOLS THAT ACTUALLY WORK
+I incorporated new tools into the MyQuit program that didn’t just offer lip service – they actually worked at actively helping a user to quit.
+
+Content Alignment
+I meticulously audited, categorized, and re-organized materials from both Nicorette as well as MyQuit. This created an intuitive and smooth content experience, where every piece of content was exactly where it needed to be – delivering clarity and value without confusion.
+
+STREAMLINED PLATFORMS
+By identifying redundancies and gaps in platforms and experiences that caused user confusion, I strategically combined platforms – eliminating overlaps, streamlining the experience, and creating a consistent intuitive journey for users.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide67_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide67_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide67_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">67 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="68" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="9"><figure class="media-frame"><img data-src="assets/slide68_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img6.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img7.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img8.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide68_img9.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">68 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="69" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide69_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide69_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide69_img3.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide69_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide69_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide69_img6.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">69 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="70" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">VOLTAREN</h2>
+    <p class="t-case-intro__tagline reveal">Omnichannel strategy launching the first OTC topical gel for pain relief</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Record-breaking results in usability, eCommerce conversion, and earned media.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">OMNICHANNEL STRATEGY</span><span class="pill pill--goal reveal">NEW PRODUCT WEBSITE</span><span class="pill pill--goal reveal">CRM</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide70_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">70 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="71" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">With Voltaren transitioning from a prescription-only (RX) product to over-the-counter (OTC) availability, the brand faced a significant challenge: breaking into the highly competitive pain relief market dominated by well-established brands. To achieve high household penetration and increase awareness, Voltaren needed a complete and differentiated digital strategy that deeply resonated with arthritis consumers—a key target audience.
+THE OPPORTUNITY
+This transition presented a unique opportunity to create a first-of-its-kind digital experience tailored specifically for arthritis patients. By understanding the unique needs of this audience, the brand could build a website that not only provided information but also offered an inclusive, user-friendly environment that addressed the physical challenges faced by arthritis sufferers. This was a chance to set Voltaren apart from the competition by delivering real value to its users through new, accessible features.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide71_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide71_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">71 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="72" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I created a strong omnichannel strategy, inclusive of a pre-launch and full-launch version of the website and CRM program, with first-party data to encourage pre-orders in a first-of-its-kind eCommerce integration. Once in market, I introduced VoltarenGel.com—the first arthritis-friendly digital experience, recognized by The Arthritis Foundation and rigorously tested with real arthritis patients. 
+The full site offered brand-new eCommerce functionality and first-party data collection. The site was built with a focus on accessibility, integrating features that were directly informed by the needs of its users. Voice-activated search and tap-to-chat functionalities, large tap targets, strategic page scroll depth, and hands-free content navigation via videos and head gesture scroll education were all critical components. These features made the site not just a digital destination, but a complete support system for arthritis patients.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Product Awareness</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Brand Transformation (OTC)</span><span class="pill pill--goal reveal">CRM Email Program</span><span class="pill pill--goal reveal">Omnichannel Strategy</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide72_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide72_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">72 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="73" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Record-breaking results in usability, eCRM conversions, and eCommerce success</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY FEATURES AND RESULTS</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Voice-activated site search and voice enabled tap-to-chat capabilities, being used by 1/3 of all users in the first month post-launch. 
+
+Strategic page scroll depth, large tap targets, and text resizing. 
+
+Testing with arthritis patients which showed that 99% of users found the website easy to use. 
+Pre-order eCommerce week 1 was noted by Shoppable as the highest one-week total sales of any brand.
+
+Ability to view hands-free content via videos and head gesture scroll education.
+
+Build credibility and awareness around optimized experience, endorsed by the Arthritis Foundation. 
+
+
+Over 61,500 users opt-in to my eCRM program, which was a conversion rate of 16%, which was 5x my estimated target.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide73_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide73_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide73_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">73 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="74" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide74_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide74_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide74_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide74_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide74_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide74_img6.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">74 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="75" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">EXCEDRIN</h2>
+    <p class="t-case-intro__tagline reveal">A new site featuring refreshed creative paired with strategic content</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Redefined Excedrin.com as the definitive head care resource with a mobile-first, SEO-optimized experience.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">WEBSITE STRATEGY</span><span class="pill pill--goal reveal">BRAND INTEGRATION</span><span class="pill pill--goal reveal">WEBSITE REDESIGN</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide75_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">75 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="76" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Excedrin, a trusted leader in headache and migraine relief, aimed to redefine its digital presence with a complete redesign of Excedrin.com. The goal was to create a user and mobile-first experience that effectively combined product information, head care education, and user engagement. This project needed to push the boundaries of the existing Haleon Web Framework while adhering to the brand’s refreshed Visual Brand Language (VBL).
+THE OPPORTUNITY
+With the headache and migraine category being both competitive and cluttered, Excedrin sought to solidify its position as the definitive resource for head care. This presented an opportunity to develop a strong digital platform that would not only educate consumers but also drive conversions. The redesign was focused on three core content pillars: full head health education, practical tips, and new product information. Each pillar was designed to increase organic traffic and guide users smoothly from awareness to purchase.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide76_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide76_img2.gif" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">76 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="77" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The design focused on delivering a user-centric experience with streamlined navigation, making it easy for users to access the information they needed and find the right products. Interactive tools, like the product selector, simplified decision-making, while strategically placed calls to action guided users from awareness to purchase. SEO-optimized content boosted organic traffic, establishing Excedrin.com as the go-to resource for headache and migraine management. This approach differentiated GSK Consumer Health, inspiring similar strategies across brands. 
+The result is a modern, engaging site that educates, engages, and drives conversions, cementing Excedrin’s leadership in the head care category.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Product Awareness</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Site Launch</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide77_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide77_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">77 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="78" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Equipping head care features and journeys leading to personalized content for a smooth path to purchase</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY FEATURES AND RESULTS</p>
+<div class="section-label reveal">INTERACTIVE PRODUCT SELECTOR</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">This tool guides users to the best Excedrin product for their needs, based on their specific symptoms and preferences, significantly enhancing the decision-making process. 
+
+ENHANCED MOBILE-FIRST DESIGN
+The website is fully optimized for mobile devices, ensuring a smooth and responsive experience across all screen sizes, catering to the 81% of users who access the site via mobile. 
+
+DYNAMIC TAGGING FRAMEWORK 
+The implementation of a tagging system allows the site to dynamically serve relevant content based on user behavior, such as related articles and product recommendations. 
+
+DYNAMIC PRODUCT COMPARISON TOOL
+Allows users to compare different Excedrin products side-by-side, helping them make informed choices with a clear understanding of product benefits and features. 
+
+FULL HEAD HEALTH EDUCATION LIBRARY 
+Offers in-depth educational content on headaches, migraines, and related symptoms, providing users with reliable, WebMD-like resources directly within the Excedrin site. 
+
+SMOOTH PATH TO PURCHASE 
+Integration with tools like PriceSpider facilitates a smooth transition from information gathering to purchasing, connecting directly to digital retailers.</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide78_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide78_img2.gif" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">78 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="79" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide79_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide79_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide79_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide79_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide79_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide79_img6.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">79 / 86</span></footer>
+</section>
+
+<section class="slide t-case-intro" data-slide="80" data-theme="dark">
+  <div class="t-case-intro__meta">
+    <div class="t-case-intro__label reveal">CASE STUDY</div>
+    <h2 class="t-case-intro__client reveal">MERCK × MCCANN GLOBAL HEALTH</h2>
+    <p class="t-case-intro__tagline reveal">Increasing HPV Vaccination in Children through &quot;Future is in YOUR Hands&quot;</p>
+    <p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-small);max-width:45ch">Refreshed HPV vaccination campaign reaching new audiences and outperforming benchmarks.</p>
+    <div class="pill-row"><span class="pill pill--goal reveal">OMNICHANNEL DIGITAL + CAMPAIGN STRATEGY</span><span class="pill pill--goal reveal">CAMPAIGN SITE</span><span class="pill pill--goal reveal">ORGANIC SOCIAL</span><span class="pill pill--goal reveal">EARNED MEDIA</span><span class="pill pill--goal reveal">PAID MEDIA</span></div>
+  </div>
+  <div class="t-case-intro__image"><figure class="media-frame"><img data-src="assets/slide80_img1.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">80 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="81" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">In partnership with McCann Global Health, St. Jude approached my team in desperate need of a complete refresh of their HPV Vaccination campaign. Not only was the current campaign not gaining the desired momentum and ROI, but it was also dated and geared towards an outdated user group – healthcare providers.
+St. Jude had established the need for a refreshed visual look in tandem with a new omnichannel perspective and strategy, in addition to new user audiences, but wasn’t sure where to turn – that’s where my team came in.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Microsite</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide81_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide81_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">81 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="82" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">With My data-backed insights, I immediately determined that the entire campaign was lacking targeted content and journeys for its main audience – parents and caregivers of young adults. My Content, UX, Design, and Media teams worked in tandem to create a wonderfully targeted, beautifully crafted experience that maintained a campaign experience from touchpoint to touchpoint. 
+I evaluated key channel pillars to identify not only what should be said, but where it should be said and who it should be targeted to. My team delivered content and strategic areas of focus around education, enablement, and partnership with the St. Jude experience – leading to meaningful, measurable results.</p>
+<div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Microsite</span></div></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide82_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide82_img2.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">82 / 86</span></footer>
+</section>
+
+<section class="slide t-approach" data-slide="83" data-theme="dark">
+  <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">POSITIVE RESULTS</div>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Mid-campaign metrics indicate that the campaign is highly resonant and drastically outperforming benchmarks</p>
+<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I built a strong strategic foundation with targeted content on intentional channels</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Paid Social Impressions on Facebook &amp; Instagram</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">2.8</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Clicks from paid social to Campaign Website</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">22</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Clicks to the HPV landing page from paid search</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">2.5</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Engagement rate from previous campaign</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">6</p></div>
+  <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide83_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide83_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide83_img3.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">83 / 86</span></footer>
+</section>
+
+<section class="slide t-gallery" data-slide="84" data-theme="dark">
+  
+  
+  <div class="t-gallery__grid" data-count="6"><figure class="media-frame"><img data-src="assets/slide84_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide84_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide84_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide84_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide84_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide84_img6.png" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">84 / 86</span></footer>
+</section>
+
+<section class="slide t-hero-intro" data-slide="85" data-theme="dark">
+  <div class="t-hero-intro__text">
+    <div class="t-hero-intro__name reveal">JOE THOMAS</div>
+    <h2 class="t-hero-intro__greeting reveal">YOU MADE IT!</h2>
+    
+    <div class="t-hero-intro__bio reveal">I&#x27;ve spent 15 years building content systems for Fortune 500 companies in healthcare, pharma, finance, retail, automotive, and CPG. 
+
+The last three, I&#x27;ve been rebuilding those systems for a world where the search engine is an LLM and the result is an answer, not a link. Not many content strategists are doing that work yet. I am. If you need someone who knows how to get there, here&#x27;s my email.</div>
+    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas <span class="footer-bar__dot"></span> YOU MADE IT!</div>
+  </div>
+  <div class="t-hero-intro__portrait"><figure class="media-frame"><img data-src="assets/slide85_img1.jpg" alt="" loading="lazy"></figure></div>
+  <footer class="footer-bar"><span class="footer-bar__num">85 / 86</span></footer>
+</section>
+
+<section class="slide t-closing" data-slide="86" data-theme="dark">
+  <h2 class="t-closing__title reveal">Thank You.</h2>
+  <footer class="footer-bar"><span class="footer-bar__num">86 / 86</span></footer>
+</section>
+
+<script>
+/* ============================================================
+   DECK — keyboard nav, slide counter, progress, deep-link
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  const slides = Array.from(document.querySelectorAll('.slide'));
+  if (!slides.length) return;
+
+  const total = slides.length;
+
+  // --- Slide counter element ---
+  const counter = document.querySelector('.deck-counter');
+  const progress = document.querySelector('.deck-progress__bar');
+
+  // --- Keyboard nav ---
+  function currentIndex() {
+    const y = window.scrollY + window.innerHeight / 2;
+    for (let i = 0; i < slides.length; i++) {
+      const r = slides[i].getBoundingClientRect();
+      const top = r.top + window.scrollY;
+      if (top <= y && top + r.height > y) return i;
+    }
+    return 0;
+  }
+
+  function go(index) {
+    index = Math.max(0, Math.min(total - 1, index));
+    slides[index].scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  document.addEventListener('keydown', (e) => {
+    // Ignore if in an input / editable element
+    if (e.target.matches('input, textarea, [contenteditable]')) return;
+
+    switch (e.key) {
+      case 'ArrowDown':
+      case 'ArrowRight':
+      case 'PageDown':
+      case ' ':
+      case 'j':
+        e.preventDefault();
+        go(currentIndex() + 1);
+        break;
+      case 'ArrowUp':
+      case 'ArrowLeft':
+      case 'PageUp':
+      case 'k':
+        e.preventDefault();
+        go(currentIndex() - 1);
+        break;
+      case 'Home':
+        e.preventDefault();
+        go(0);
+        break;
+      case 'End':
+        e.preventDefault();
+        go(total - 1);
+        break;
+    }
+  });
+
+  // --- Update counter + progress + deep-link ---
+  const observer = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting && entry.intersectionRatio > 0.5) {
+          const idx = slides.indexOf(entry.target);
+          if (idx === -1) return;
+          const n = idx + 1;
+          if (counter) counter.textContent = String(n).padStart(2, '0') + ' / ' + String(total).padStart(2, '0');
+          if (progress) progress.style.width = (n / total * 100) + '%';
+          if (history.replaceState) history.replaceState(null, '', '#slide-' + n);
+        }
+      });
+    },
+    { threshold: [0.5] }
+  );
+
+  slides.forEach((slide) => observer.observe(slide));
+
+  // --- Deep-link support on load ---
+  if (location.hash && location.hash.startsWith('#slide-')) {
+    const n = parseInt(location.hash.slice(7), 10);
+    if (n >= 1 && n <= total) {
+      // Wait a tick for layout
+      requestAnimationFrame(() => go(n - 1));
+    }
+  }
+})();
+
+/* ============================================================
+   LAZY MEDIA — IntersectionObserver-based image hydration
+   Adds 2-slide preload margin for smooth scroll-through
+   ============================================================ */
+
+(function () {
+  'use strict';
+
+  const images = document.querySelectorAll('img[data-src]');
+  if (!images.length) return;
+
+  const supportsIO = 'IntersectionObserver' in window;
+
+  function hydrate(img) {
+    const src = img.getAttribute('data-src');
+    if (!src) return;
+    img.addEventListener('load', () => {
+      img.setAttribute('data-loaded', 'true');
+      const frame = img.closest('.media-frame');
+      if (frame) frame.removeAttribute('data-state');
+    }, { once: true });
+    img.addEventListener('error', () => {
+      const frame = img.closest('.media-frame');
+      if (frame) frame.setAttribute('data-state', 'error');
+    }, { once: true });
+    img.src = src;
+    img.removeAttribute('data-src');
+  }
+
+  if (!supportsIO) {
+    images.forEach(hydrate);
+    return;
+  }
+
+  const io = new IntersectionObserver(
+    (entries) => {
+      entries.forEach((entry) => {
+        if (entry.isIntersecting) {
+          hydrate(entry.target);
+          io.unobserve(entry.target);
+        }
+      });
+    },
+    {
+      // Preload 2 slides ahead in each direction
+      rootMargin: '200% 0px',
+      threshold: 0.01,
+    }
+  );
+
+  images.forEach((img) => {
+    const frame = img.closest('.media-frame');
+    if (frame) frame.setAttribute('data-state', 'loading');
+    io.observe(img);
+  });
+})();
+
+
+
+    // Scroll-triggered reveal animations
+    const revealObs = new IntersectionObserver((entries) => {
+      entries.forEach(e => { if (e.isIntersecting) e.target.classList.add('visible'); });
+    }, { threshold: 0.15 });
+    document.querySelectorAll('.slide').forEach(s => revealObs.observe(s));
+    
+</script>
+</body>
+</html>
