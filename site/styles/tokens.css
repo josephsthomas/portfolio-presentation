@@ -1,0 +1,80 @@
+/* ============================================================
+   DESIGN TOKENS — sampled from Case.Studies.pptx theme XML
+   ============================================================ */
+
+:root {
+  /* ---- Brand navy ---- */
+  --navy-900: #0a0f24;   /* deepest bg */
+  --navy-800: #12183D;   /* stat card bg */
+  --navy-700: #141a3a;
+  --navy-600: #1E2761;   /* primary brand navy */
+  --navy-500: #2B3773;
+
+  /* ---- Accent ---- */
+  --blue-500: #4A90E2;   /* electric blue accent */
+  --blue-400: #7DD3FC;   /* accent sky */
+  --blue-200: #CADCFC;   /* rule lavender */
+
+  /* ---- Surface ---- */
+  --cream:   #FAF9F4;
+  --paper:   #F5F7FB;
+  --white:   #FFFFFF;
+
+  /* ---- Ink ---- */
+  --ink:          #1A1D2C;
+  --ink-mute:     #6C7593;
+  --ink-soft:     #9AA3C0;
+  --ink-inv:      #FFFFFF;
+  --ink-inv-mute: rgba(255, 255, 255, 0.68);
+  --ink-inv-soft: rgba(255, 255, 255, 0.38);
+
+  /* ---- Rules ---- */
+  --rule:     rgba(26, 29, 44, 0.10);
+  --rule-inv: rgba(255, 255, 255, 0.15);
+
+  /* ---- Type families ---- */
+  --font-display: Georgia, 'Times New Roman', serif;
+  --font-body:    'Figtree', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+
+  /* ---- Fluid type scale ---- */
+  --t-hero:    clamp(3rem, 8vw, 7.5rem);
+  --t-title:   clamp(2rem, 5vw, 4.5rem);
+  --t-h1:      clamp(1.75rem, 3.8vw, 3rem);
+  --t-h2:      clamp(1.35rem, 2.6vw, 2.25rem);
+  --t-h3:      clamp(1.05rem, 1.6vw, 1.4rem);
+  --t-body:    clamp(0.9rem, 1.15vw, 1.1rem);
+  --t-small:   clamp(0.78rem, 1vw, 0.92rem);
+  --t-meta:    clamp(0.68rem, 0.95vw, 0.82rem);
+  --t-eyebrow: clamp(0.68rem, 0.92vw, 0.8rem);
+
+  /* ---- Big-number scale (stat cards, hero numbers) ---- */
+  --t-stat-lg: clamp(3rem, 6vw, 5rem);
+  --t-stat-md: clamp(2rem, 4vw, 3.25rem);
+
+  /* ---- Spacing (fluid) ---- */
+  --pad-slide: clamp(2rem, 5vw, 5.5rem);
+  --gap-xl:    clamp(2rem, 4vw, 4rem);
+  --gap-lg:    clamp(1.5rem, 3vw, 3rem);
+  --gap-md:    clamp(1rem, 2vw, 1.5rem);
+  --gap-sm:    clamp(0.5rem, 1vw, 0.85rem);
+
+  /* ---- Radii ---- */
+  --r-sm: 4px;
+  --r-md: 10px;
+  --r-lg: 18px;
+  --r-pill: 999px;
+
+  /* ---- Motion ---- */
+  --ease-out: cubic-bezier(0.2, 0.8, 0.2, 1);
+  --dur-fast: 200ms;
+  --dur-med:  600ms;
+  --dur-slow: 1000ms;
+
+  /* ---- Shadow ---- */
+  --sh-card: 0 20px 60px rgba(10, 15, 36, 0.12);
+  --sh-card-dark: 0 30px 80px rgba(0, 0, 0, 0.4);
+}
+
+/* Per-slide theme switch */
+.slide[data-theme="dark"]  { color-scheme: dark; }
+.slide[data-theme="light"] { color-scheme: light; }

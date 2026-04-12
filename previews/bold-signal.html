@@ -1,0 +1,423 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Preview — Bold Signal (Navy Tuned) — Joe Thomas</title>
+
+<!-- Georgia is a system font / web-safe; Figtree from Google -->
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+<style>
+/* ===========================================
+   VIEWPORT BASE — from viewport-base.css
+   =========================================== */
+html, body { height: 100%; overflow-x: hidden; }
+html { scroll-snap-type: y mandatory; scroll-behavior: smooth; }
+
+.slide {
+    width: 100vw;
+    height: 100vh;
+    height: 100dvh;
+    overflow: hidden;
+    scroll-snap-align: start;
+    display: flex;
+    flex-direction: column;
+    position: relative;
+}
+
+:root {
+    /* Tuned for Joe Thomas portfolio — navy palette sampled from source deck */
+    --bg-base: #0a0f24;
+    --bg-mid: #141a3a;
+    --bg-deep: #1E2761;
+    --ink-primary: #ffffff;
+    --ink-secondary: rgba(255, 255, 255, 0.68);
+    --ink-tertiary: rgba(255, 255, 255, 0.38);
+    --accent-card: #4A90E2;
+    --accent-card-deep: #2077D3;
+    --accent-sky: #7DD3FC;
+    --hairline: rgba(255, 255, 255, 0.12);
+
+    /* Typography — Georgia for display, Figtree for body */
+    --font-display: Georgia, 'Times New Roman', serif;
+    --font-body: 'Figtree', -apple-system, sans-serif;
+
+    --title-size: clamp(2.5rem, 7vw, 6rem);
+    --eyebrow-size: clamp(0.7rem, 1vw, 0.85rem);
+    --body-size: clamp(0.85rem, 1.15vw, 1.05rem);
+    --slide-padding: clamp(2rem, 5vw, 5rem);
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+    background: var(--bg-base);
+    color: var(--ink-primary);
+    font-family: var(--font-body);
+    -webkit-font-smoothing: antialiased;
+    font-feature-settings: 'kern', 'liga';
+}
+
+/* ===========================================
+   SLIDE 1 — TITLE / BOLD SIGNAL (NAVY TUNED)
+   =========================================== */
+
+.slide-title {
+    background:
+        radial-gradient(ellipse at 80% 20%, rgba(74, 144, 226, 0.18) 0%, transparent 50%),
+        radial-gradient(ellipse at 20% 90%, rgba(30, 39, 97, 0.6) 0%, transparent 50%),
+        linear-gradient(135deg, var(--bg-base) 0%, var(--bg-mid) 50%, var(--bg-base) 100%);
+}
+
+/* Subtle grid overlay for precision feel */
+.slide-title::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background-image:
+        linear-gradient(var(--hairline) 1px, transparent 1px),
+        linear-gradient(90deg, var(--hairline) 1px, transparent 1px);
+    background-size: clamp(40px, 6vw, 80px) clamp(40px, 6vw, 80px);
+    mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    -webkit-mask-image: radial-gradient(ellipse at center, black 0%, transparent 75%);
+    pointer-events: none;
+    opacity: 0.35;
+}
+
+/* Top bar — section number + breadcrumbs */
+.slide-header {
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    padding: var(--slide-padding);
+    padding-bottom: 0;
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+    z-index: 2;
+}
+
+.section-number {
+    font-family: var(--font-display);
+    font-size: clamp(1rem, 1.5vw, 1.35rem);
+    font-style: italic;
+    color: var(--ink-secondary);
+    letter-spacing: 0.02em;
+}
+
+.section-number::before {
+    content: '§ ';
+    color: var(--accent-card);
+    font-style: normal;
+}
+
+.breadcrumbs {
+    display: flex;
+    gap: clamp(0.75rem, 2vw, 1.5rem);
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.14em;
+    font-weight: 500;
+}
+
+.breadcrumbs span {
+    color: var(--ink-tertiary);
+    transition: color 0.3s ease;
+}
+
+.breadcrumbs span.active {
+    color: var(--ink-primary);
+    position: relative;
+}
+
+.breadcrumbs span.active::after {
+    content: '';
+    position: absolute;
+    bottom: calc(-0.4rem);
+    left: 0; right: 0;
+    height: 2px;
+    background: var(--accent-card);
+}
+
+/* Main content block — the bold accent card */
+.slide-body {
+    flex: 1;
+    display: grid;
+    grid-template-columns: 1fr auto;
+    align-items: end;
+    padding: var(--slide-padding);
+    gap: clamp(1rem, 3vw, 3rem);
+    z-index: 1;
+}
+
+.title-block {
+    max-width: min(70vw, 900px);
+}
+
+.eyebrow {
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.24em;
+    font-weight: 600;
+    color: var(--accent-sky);
+    margin-bottom: clamp(1rem, 2vh, 2rem);
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+    opacity: 0;
+    animation: fadeUp 0.8s ease 0.2s forwards;
+}
+
+.eyebrow::before {
+    content: '';
+    width: clamp(30px, 4vw, 60px);
+    height: 1px;
+    background: var(--accent-card);
+}
+
+.big-name {
+    font-family: var(--font-display);
+    font-size: var(--title-size);
+    font-weight: 700;
+    line-height: 0.92;
+    letter-spacing: -0.025em;
+    margin-bottom: clamp(0.5rem, 1.5vh, 1.5rem);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.4s forwards;
+}
+
+.big-name em {
+    font-style: italic;
+    color: var(--accent-sky);
+    font-weight: 400;
+}
+
+.role {
+    font-family: var(--font-body);
+    font-size: clamp(1.1rem, 1.6vw, 1.5rem);
+    font-weight: 300;
+    color: var(--ink-secondary);
+    max-width: 38ch;
+    line-height: 1.35;
+    margin-bottom: clamp(1.5rem, 3vh, 2.5rem);
+    opacity: 0;
+    animation: fadeUp 0.9s ease 0.55s forwards;
+}
+
+.discipline-tags {
+    display: flex;
+    flex-wrap: wrap;
+    gap: clamp(0.4rem, 1vw, 0.85rem);
+    max-width: min(70vw, 720px);
+    opacity: 0;
+    animation: fadeUp 1s ease 0.75s forwards;
+}
+
+.discipline-tags span {
+    font-family: var(--font-body);
+    font-size: clamp(0.7rem, 0.95vw, 0.85rem);
+    text-transform: uppercase;
+    letter-spacing: 0.12em;
+    font-weight: 500;
+    padding: clamp(0.4rem, 0.8vh, 0.6rem) clamp(0.75rem, 1.3vw, 1.1rem);
+    border: 1px solid var(--hairline);
+    border-radius: 999px;
+    color: var(--ink-secondary);
+    backdrop-filter: blur(6px);
+    background: rgba(255, 255, 255, 0.02);
+    transition: all 0.3s ease;
+}
+
+.discipline-tags span:hover {
+    border-color: var(--accent-card);
+    color: var(--ink-primary);
+    background: rgba(74, 144, 226, 0.12);
+}
+
+/* The bold signal card — accent block bottom right */
+.signal-card {
+    background: linear-gradient(135deg, var(--accent-card) 0%, var(--accent-card-deep) 100%);
+    color: var(--ink-primary);
+    padding: clamp(1.5rem, 2.5vw, 2.25rem);
+    aspect-ratio: 1 / 1.1;
+    width: clamp(180px, 18vw, 280px);
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    position: relative;
+    overflow: hidden;
+    opacity: 0;
+    animation: cardIn 1s cubic-bezier(0.2, 0.8, 0.2, 1) 0.3s forwards;
+    box-shadow:
+        0 20px 60px rgba(74, 144, 226, 0.35),
+        0 0 0 1px rgba(255, 255, 255, 0.08) inset;
+}
+
+.signal-card::before {
+    content: '';
+    position: absolute;
+    inset: clamp(10px, 1.2vw, 16px);
+    border: 1px solid rgba(255, 255, 255, 0.22);
+    pointer-events: none;
+}
+
+.signal-card-label {
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.18em;
+    font-weight: 600;
+    opacity: 0.8;
+}
+
+.signal-card-big {
+    font-family: var(--font-display);
+    font-size: clamp(2.5rem, 4.5vw, 4.5rem);
+    font-weight: 700;
+    line-height: 0.85;
+    font-style: italic;
+}
+
+.signal-card-big small {
+    font-size: 0.35em;
+    vertical-align: super;
+    margin-left: 0.25em;
+    font-style: normal;
+    opacity: 0.75;
+}
+
+.signal-card-caption {
+    font-family: var(--font-body);
+    font-size: clamp(0.65rem, 0.9vw, 0.8rem);
+    font-weight: 400;
+    line-height: 1.35;
+    max-width: 22ch;
+    opacity: 0.9;
+}
+
+/* Bottom signature bar */
+.slide-footer {
+    position: absolute;
+    bottom: 0; left: 0; right: 0;
+    padding: 0 var(--slide-padding) clamp(1.25rem, 2.5vh, 2rem);
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    font-family: var(--font-body);
+    font-size: var(--eyebrow-size);
+    text-transform: uppercase;
+    letter-spacing: 0.16em;
+    color: var(--ink-tertiary);
+    z-index: 2;
+    pointer-events: none;
+}
+
+.slide-footer .dot {
+    display: inline-block;
+    width: 6px; height: 6px;
+    background: var(--accent-card);
+    border-radius: 50%;
+    margin: 0 0.5rem;
+    vertical-align: middle;
+}
+
+/* Animations */
+@keyframes fadeUp {
+    from { opacity: 0; transform: translateY(20px); }
+    to   { opacity: 1; transform: translateY(0); }
+}
+
+@keyframes cardIn {
+    from {
+        opacity: 0;
+        transform: translateY(40px) scale(0.94);
+    }
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+/* Short viewports */
+@media (max-height: 700px) {
+    :root {
+        --slide-padding: clamp(1.25rem, 3vw, 3rem);
+        --title-size: clamp(2rem, 6vw, 4.5rem);
+    }
+}
+
+@media (max-width: 900px) {
+    .slide-body {
+        grid-template-columns: 1fr;
+        align-items: end;
+    }
+    .signal-card {
+        justify-self: end;
+        width: clamp(140px, 32vw, 200px);
+    }
+    .breadcrumbs { display: none; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    * { animation-duration: 0.01ms !important; transition-duration: 0.2s !important; }
+}
+</style>
+</head>
+<body>
+
+<section class="slide slide-title">
+
+    <!-- Top header -->
+    <div class="slide-header">
+        <div class="section-number">01 — Portfolio</div>
+        <nav class="breadcrumbs">
+            <span class="active">Intro</span>
+            <span>Process</span>
+            <span>Case Studies</span>
+            <span>Contact</span>
+        </nav>
+    </div>
+
+    <!-- Main content -->
+    <div class="slide-body">
+
+        <div class="title-block">
+            <div class="eyebrow">Portfolio &nbsp;·&nbsp; 2026</div>
+
+            <h1 class="big-name">Joe<br><em>Thomas</em></h1>
+
+            <p class="role">Senior Content Strategy &amp; Experience Leader — fifteen years shaping how Fortune 500 brands speak, connect, and convert.</p>
+
+            <div class="discipline-tags">
+                <span>Content Strategy</span>
+                <span>Experience Strategy</span>
+                <span>AI-Enabled Content Ops</span>
+                <span>Information Architecture</span>
+                <span>LLM-Aware SEO</span>
+                <span>Engagement &amp; Delivery</span>
+            </div>
+        </div>
+
+        <!-- Bold Signal accent card -->
+        <div class="signal-card">
+            <div class="signal-card-label">By the numbers</div>
+            <div class="signal-card-big">15<small>yrs</small></div>
+            <div class="signal-card-caption">Enterprise engagements. $750K+ in recovered revenue. Nine case studies inside.</div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="slide-footer">
+        <span>Joseph S. Thomas <span class="dot"></span> Franklin, TN</span>
+        <span>01 / 86</span>
+    </div>
+
+</section>
+
+</body>
+</html>

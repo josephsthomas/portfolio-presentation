@@ -1,0 +1,803 @@
+/* ============================================================
+   TEMPLATES — T1..T11 slide layouts
+   Each template is a class on .slide
+   ============================================================ */
+
+/* ============================================================
+   T1 — COVER (slide 1)
+   Two-panel 62/38 vertical split: cream hero top, navy bottom
+   ============================================================ */
+.t-cover {
+  display: grid;
+  grid-template-rows: 62fr 38fr;
+  padding: 0;
+}
+
+.t-cover__top {
+  background: var(--cream);
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  position: relative;
+  overflow: hidden;
+}
+
+.t-cover__top::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 40%;
+  height: 100%;
+  background: repeating-linear-gradient(
+    -45deg,
+    transparent 0,
+    transparent 12px,
+    rgba(30, 39, 97, 0.04) 12px,
+    rgba(30, 39, 97, 0.04) 13px
+  );
+  pointer-events: none;
+}
+
+.t-cover__eyebrow {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.35em;
+  font-weight: 600;
+  color: var(--navy-600);
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__hero {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  line-height: 0.9;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  color: var(--ink);
+  margin-top: auto;
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__hero em {
+  font-style: italic;
+  color: var(--navy-600);
+  font-weight: 400;
+}
+
+.t-cover__role {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.5vw, 1.35rem);
+  color: var(--ink-mute);
+  margin-top: var(--gap-md);
+  max-width: 40ch;
+  font-weight: 400;
+  line-height: 1.4;
+  z-index: 1;
+  position: relative;
+}
+
+.t-cover__accent-bar {
+  position: absolute;
+  bottom: 0; left: var(--pad-slide); right: var(--pad-slide);
+  height: 3px;
+  background: linear-gradient(90deg, var(--blue-500) 0%, var(--blue-400) 40%, transparent 100%);
+}
+
+.t-cover__bottom {
+  background:
+    radial-gradient(ellipse at 30% 0%, rgba(74, 144, 226, 0.18) 0%, transparent 55%),
+    linear-gradient(180deg, var(--navy-600) 0%, var(--navy-900) 100%);
+  color: var(--ink-inv);
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  gap: var(--gap-md);
+  position: relative;
+  overflow: hidden;
+}
+
+.t-cover__bottom::before {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background-image:
+    linear-gradient(rgba(255, 255, 255, 0.04) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255, 255, 255, 0.04) 1px, transparent 1px);
+  background-size: clamp(40px, 5vw, 80px) clamp(40px, 5vw, 80px);
+  mask-image: linear-gradient(to right, transparent 0%, black 100%);
+  pointer-events: none;
+}
+
+.t-cover__disciplines {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md) var(--gap-lg);
+  font-family: var(--font-body);
+  font-size: clamp(0.85rem, 1.1vw, 1.05rem);
+  z-index: 1;
+  max-width: 1400px;
+}
+
+.t-cover__disciplines > div {
+  padding-bottom: 0.75rem;
+  border-bottom: 1px solid var(--rule-inv);
+  display: flex;
+  align-items: baseline;
+  gap: 0.75rem;
+}
+
+.t-cover__disciplines > div::before {
+  content: counter(disc, decimal-leading-zero);
+  counter-increment: disc;
+  font-family: var(--font-display);
+  font-style: italic;
+  color: var(--blue-400);
+  font-size: 0.9em;
+}
+
+.t-cover__disciplines { counter-reset: disc; }
+
+.t-cover__contact {
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.18em;
+  color: var(--ink-inv-mute);
+  z-index: 1;
+}
+
+/* ============================================================
+   T2 — SECTION HERO INTRO (slides 2, 85)
+   Big bio hero + portrait image
+   ============================================================ */
+.t-hero-intro {
+  display: grid;
+  grid-template-columns: 1.4fr 1fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-hero-intro__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 60ch;
+}
+
+.t-hero-intro__name {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  color: var(--blue-400);
+}
+
+.t-hero-intro__greeting {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--ink-inv);
+}
+
+.t-hero-intro__role {
+  font-family: var(--font-display);
+  font-size: clamp(1.4rem, 2.6vw, 2.3rem);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 1.15;
+  color: var(--blue-400);
+}
+
+.t-hero-intro__bio {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  color: var(--ink-inv-mute);
+  max-width: 62ch;
+  white-space: pre-line;
+}
+
+.t-hero-intro__contact {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--gap-md);
+  font-family: var(--font-body);
+  font-size: var(--t-meta);
+  text-transform: uppercase;
+  letter-spacing: 0.14em;
+  color: var(--ink-inv-soft);
+  padding-top: var(--gap-md);
+  border-top: 1px solid var(--rule-inv);
+  margin-top: var(--gap-sm);
+}
+
+.t-hero-intro__portrait {
+  position: relative;
+  aspect-ratio: 3 / 4;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card-dark);
+}
+
+.t-hero-intro__portrait img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.t-hero-intro__portrait::after {
+  content: '';
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(180deg, transparent 60%, rgba(10, 15, 36, 0.5) 100%);
+  pointer-events: none;
+}
+
+/* ============================================================
+   T3 — NARRATIVE + NUMBERED CARDS (slides 3, 6, 7)
+   Intro column left + grid of num-cards right
+   ============================================================ */
+.t-narrative {
+  display: grid;
+  grid-template-columns: 1fr 1.8fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-narrative__intro {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 32ch;
+}
+
+.t-narrative__label {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.24em;
+  font-weight: 600;
+  color: var(--blue-500);
+}
+
+.t-narrative__title {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 1;
+  letter-spacing: -0.02em;
+  color: var(--navy-600);
+}
+
+.t-narrative__cards {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  grid-auto-rows: 1fr;
+  gap: var(--gap-md);
+}
+
+/* For 6-card or 4-card layouts */
+.t-narrative__cards[data-count="4"] {
+  grid-template-columns: repeat(2, 1fr);
+}
+
+/* ============================================================
+   T4 — TIMELINE / CAREER PATH (slide 8)
+   ============================================================ */
+.t-timeline {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+  position: relative;
+}
+
+.t-timeline__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.85rem;
+  max-width: 60ch;
+}
+
+.t-timeline__rail {
+  position: relative;
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.t-timeline__rail::before {
+  content: '';
+  position: absolute;
+  left: calc(clamp(2.4rem, 3.6vw, 3.6rem) / 2);
+  top: 1.8rem;
+  bottom: 1.8rem;
+  width: 2px;
+  background: var(--blue-200);
+}
+
+.t-timeline__item {
+  display: grid;
+  grid-template-columns: auto 1fr;
+  gap: var(--gap-md);
+  align-items: flex-start;
+  position: relative;
+  padding-bottom: var(--gap-md);
+}
+
+.t-timeline__item:last-child {
+  padding-bottom: 0;
+}
+
+.t-timeline__body {
+  display: grid;
+  grid-template-columns: 1fr 2fr;
+  gap: var(--gap-md);
+  align-items: baseline;
+  padding-top: 0.5rem;
+}
+
+.t-timeline__years {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.6vw, 1.4rem);
+  color: var(--navy-600);
+  font-weight: 400;
+}
+
+.t-timeline__company {
+  font-family: var(--font-display);
+  font-size: var(--t-h3);
+  font-weight: 700;
+  color: var(--ink);
+  letter-spacing: 0.01em;
+}
+
+.t-timeline__role {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  margin-top: 0.25rem;
+}
+
+.t-timeline__note {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  line-height: 1.5;
+  grid-column: 1 / -1;
+}
+
+/* ============================================================
+   T5 — CASE STUDY INTRO (slides 35, 41, 47, 53, 58/59, 64/65, 70/71, 75/76, 80/81)
+   Client name hero + meta
+   ============================================================ */
+.t-case-intro {
+  display: grid;
+  grid-template-columns: 1.3fr 1fr;
+  padding: var(--pad-slide);
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-case-intro__meta {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 50ch;
+}
+
+.t-case-intro__counter {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.1rem, 1.8vw, 1.6rem);
+  color: var(--blue-400);
+}
+
+.t-case-intro__label {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  font-weight: 600;
+  color: var(--blue-400);
+}
+
+.t-case-intro__client {
+  font-family: var(--font-display);
+  font-size: var(--t-title);
+  font-weight: 700;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+}
+
+.t-case-intro__tagline {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(1.2rem, 2vw, 1.9rem);
+  line-height: 1.2;
+  color: var(--blue-400);
+  font-weight: 400;
+}
+
+.t-case-intro__image {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card-dark);
+}
+
+.t-case-intro__image img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   T6 — STAT GRID (slide 4 "By the numbers", case results)
+   ============================================================ */
+.t-stats {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+  position: relative;
+}
+
+.t-stats__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-stats__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.t-stats__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-stats__grid[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+
+/* ============================================================
+   T7 — SITUATION + GOALS (case slide +1, e.g. 36, 42, 48)
+   ============================================================ */
+.t-situation {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1.2fr 1fr;
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-situation__narrative {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+}
+
+.t-situation__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--navy-600);
+  letter-spacing: -0.01em;
+}
+
+.t-situation__body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  color: var(--ink);
+  white-space: pre-line;
+  max-width: 55ch;
+}
+
+.t-situation__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card);
+}
+
+.t-situation__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+[data-theme="dark"] .t-situation__heading,
+[data-theme="dark-solid"] .t-situation__heading {
+  color: var(--white);
+}
+
+[data-theme="dark"] .t-situation__body,
+[data-theme="dark-solid"] .t-situation__body {
+  color: var(--ink-inv-mute);
+}
+
+/* ============================================================
+   T8 — APPROACH / SOLUTION NARRATIVE
+   Mixed text + image
+   ============================================================ */
+.t-approach {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: var(--gap-xl);
+  align-items: center;
+  position: relative;
+}
+
+.t-approach--reverse {
+  grid-template-columns: 1fr 1fr;
+}
+
+.t-approach--reverse .t-approach__text {
+  order: 2;
+}
+
+.t-approach__text {
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-md);
+  max-width: 55ch;
+}
+
+.t-approach__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  line-height: 1.1;
+  color: var(--navy-600);
+}
+
+.t-approach__body {
+  font-family: var(--font-body);
+  font-size: var(--t-body);
+  line-height: 1.65;
+  white-space: pre-line;
+}
+
+[data-theme="dark"] .t-approach__heading,
+[data-theme="dark-solid"] .t-approach__heading {
+  color: var(--white);
+}
+
+.t-approach__media {
+  aspect-ratio: 4 / 3;
+  border-radius: var(--r-md);
+  overflow: hidden;
+  box-shadow: var(--sh-card);
+  position: relative;
+}
+
+.t-approach__media img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* ============================================================
+   T9 — RESULTS + METRICS
+   2x2 or 3x2 stat-card grid
+   ============================================================ */
+.t-results {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  gap: var(--gap-lg);
+  justify-content: center;
+}
+
+.t-results__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-results__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+}
+
+.t-results__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-results__grid[data-count="4"] { grid-template-columns: repeat(2, 1fr); grid-auto-rows: 1fr; }
+
+/* ============================================================
+   T10 — TRANSITION (slides 10, 11, 33, 34)
+   Part number + title, minimal
+   ============================================================ */
+.t-transition {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: flex-start;
+  gap: var(--gap-md);
+  position: relative;
+}
+
+.t-transition::before {
+  content: '';
+  position: absolute;
+  top: 50%;
+  left: 0;
+  right: 40%;
+  height: 1px;
+  background: var(--rule-inv);
+  transform: translateY(-50%);
+  z-index: 0;
+}
+
+.t-transition__part {
+  font-family: var(--font-body);
+  font-size: var(--t-eyebrow);
+  text-transform: uppercase;
+  letter-spacing: 0.4em;
+  font-weight: 600;
+  color: var(--blue-400);
+  z-index: 1;
+}
+
+.t-transition__title {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.95;
+  letter-spacing: -0.02em;
+  color: var(--white);
+  max-width: 18ch;
+  z-index: 1;
+}
+
+.t-transition__body {
+  font-family: var(--font-body);
+  font-size: clamp(1rem, 1.4vw, 1.25rem);
+  line-height: 1.55;
+  color: var(--ink-inv-mute);
+  max-width: 60ch;
+  z-index: 1;
+  white-space: pre-line;
+}
+
+/* ============================================================
+   T11 — CLOSING (slide 86)
+   ============================================================ */
+.t-closing {
+  padding: var(--pad-slide);
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  text-align: center;
+  gap: var(--gap-md);
+}
+
+.t-closing__title {
+  font-family: var(--font-display);
+  font-size: var(--t-hero);
+  font-weight: 400;
+  font-style: italic;
+  line-height: 0.9;
+  letter-spacing: -0.03em;
+  color: var(--white);
+}
+
+.t-closing__sub {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  text-transform: uppercase;
+  letter-spacing: 0.3em;
+  color: var(--blue-400);
+}
+
+/* ============================================================
+   T12 — GALLERY (slides 16-31, 40, 52, 62-63, 68-69, 74, 79, 84)
+   Screenshot-heavy layouts
+   ============================================================ */
+.t-gallery {
+  padding: var(--pad-slide);
+  display: grid;
+  grid-template-columns: 1fr;
+  gap: var(--gap-md);
+  position: relative;
+}
+
+.t-gallery__head {
+  display: flex;
+  flex-direction: column;
+  gap: 0.5rem;
+  max-width: 60ch;
+}
+
+.t-gallery__heading {
+  font-family: var(--font-display);
+  font-size: var(--t-h1);
+  font-weight: 700;
+  color: var(--navy-600);
+  line-height: 1.1;
+}
+
+[data-theme="dark"] .t-gallery__heading,
+[data-theme="dark-solid"] .t-gallery__heading {
+  color: var(--white);
+}
+
+.t-gallery__grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: var(--gap-md);
+  flex: 1;
+  min-height: 0;
+}
+
+.t-gallery__grid[data-count="2"] { grid-template-columns: repeat(2, 1fr); }
+.t-gallery__grid[data-count="4"] { grid-template-columns: repeat(4, 1fr); }
+.t-gallery__grid[data-count="5"] { grid-template-columns: repeat(5, 1fr); }
+.t-gallery__grid[data-count="6"] { grid-template-columns: repeat(3, 1fr); grid-auto-rows: 1fr; }
+.t-gallery__grid[data-count="7"] { grid-template-columns: repeat(4, 1fr); }
+.t-gallery__grid[data-count="8"], .t-gallery__grid[data-count="9"] { grid-template-columns: repeat(3, 1fr); }
+
+.t-gallery__caption {
+  font-family: var(--font-body);
+  font-size: var(--t-small);
+  color: var(--ink-mute);
+  line-height: 1.5;
+  max-width: 70ch;
+}
+
+[data-theme="dark"] .t-gallery__caption,
+[data-theme="dark-solid"] .t-gallery__caption {
+  color: var(--ink-inv-mute);
+}
+
+/* ============================================================
+   Responsive: narrow viewports
+   ============================================================ */
+@media (max-width: 1024px) {
+  .t-cover { grid-template-rows: 55fr 45fr; }
+  .t-cover__disciplines { grid-template-columns: repeat(2, 1fr); }
+  .t-hero-intro, .t-narrative, .t-case-intro, .t-situation, .t-approach {
+    grid-template-columns: 1fr;
+    gap: var(--gap-lg);
+  }
+  .t-narrative__cards { grid-template-columns: repeat(2, 1fr); }
+  .t-stats__grid, .t-results__grid { grid-template-columns: repeat(2, 1fr) !important; }
+  .t-gallery__grid[data-count="3"],
+  .t-gallery__grid[data-count="4"],
+  .t-gallery__grid[data-count="5"],
+  .t-gallery__grid[data-count="6"],
+  .t-gallery__grid[data-count="7"],
+  .t-gallery__grid[data-count="8"],
+  .t-gallery__grid[data-count="9"] { grid-template-columns: repeat(2, 1fr); }
+}
+
+@media (max-width: 640px) {
+  .t-cover__disciplines { grid-template-columns: 1fr; }
+  .t-narrative__cards, .t-stats__grid, .t-results__grid { grid-template-columns: 1fr !important; }
+  .t-timeline__body { grid-template-columns: 1fr; }
+  .t-gallery__grid { grid-template-columns: 1fr !important; }
+}
