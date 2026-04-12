@@ -3,6 +3,9 @@ extracted/assets/
 site/assets/
 site/assets-web/
 
+# Upload bundle (139 MB, for manual SFTP deploy)
+portfolio-upload.zip
+
 # Source PowerPoint is hosted as a GitHub release asset, not in git
 *.pptx
 
