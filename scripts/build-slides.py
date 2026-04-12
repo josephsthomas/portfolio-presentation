@@ -99,21 +99,27 @@ def render_hero(s):
     # Find bio (longest text block)
     bio = max(c, key=len) if c else ''
     name = c[0] if c else ''
-    # Gather short items as contact
-    short = [x for x in c if len(x) < 40 and not is_page_num(x, n) and x != name and x != bio]
-    contact_html = ' <span class="footer-bar__dot"></span> '.join(h(x) for x in short[:4])
-    # Find greeting-like text
+    # Categorize all content
     greeting = ''
     role_text = ''
+    contact_items = []
+    other_text = []
     for x in c:
+        if is_page_num(x.strip(), n): continue
+        if x == name or x == bio: continue
         if x.startswith("HELLO") or x.startswith("YOU MADE"): greeting = x
-        if 'Content Strategy' in x and len(x) < 60: role_text = x
+        elif 'Content Strategy' in x and len(x) < 60: role_text = x
+        elif len(x) < 40: contact_items.append(x)
+        else: other_text.append(x)
+    contact_html = ' <span class="footer-bar__dot"></span> '.join(h(x) for x in contact_items[:4])
+    other_html = ''.join(f'<p class="reveal" style="color:var(--ink-inv-mute);font-size:var(--t-body)">{h(x)}</p>' for x in other_text if x != bio)
     return f'''<section class="slide t-hero-intro" data-slide="{n}" data-theme="dark">
   <div class="t-hero-intro__text">
     <div class="t-hero-intro__name reveal">{h(name)}</div>
     {f'<h2 class="t-hero-intro__greeting reveal">{h(greeting)}</h2>' if greeting else ''}
     {f'<p class="t-hero-intro__role reveal">{h(role_text)}</p>' if role_text else ''}
     <div class="t-hero-intro__bio reveal">{h(bio)}</div>
+    {other_html}
     <div class="t-hero-intro__contact reveal">{contact_html}</div>
   </div>
   {f'<div class="t-hero-intro__portrait">{img_html}</div>' if img_html else ''}
@@ -267,7 +273,8 @@ def render_casebody(s):
         txt = c[i]
         if is_page_num(txt.strip(), n): i+=1; continue
         if txt.strip() == 'GOALS':
-            # Collect goal pills
+            # Render the GOALS label + collect goal pills
+            blocks.append(('text', 'GOALS', ''))
             i += 1
             while i < len(c) and len(c[i]) < 50 and not is_page_num(c[i].strip(), n):
                 goals.append(c[i])
@@ -278,8 +285,8 @@ def render_casebody(s):
             blocks.append(('labeled', label, body))
         elif len(txt) > 80:
             blocks.append(('body', '', txt))
-        elif len(txt) < 6 and (txt.strip().endswith('%') or txt.strip().endswith('+') or txt.strip() in ('+','%','M','K','x','PAGE')):
-            blocks.append(('stat_part', txt, ''))
+        elif len(txt) < 6 and txt.strip() in ('+','%','M','K','x','PAGE'):
+            blocks.append(('stat_sym', txt, ''))
         else:
             blocks.append(('text', txt, ''))
         i += 1
@@ -291,6 +298,8 @@ def render_casebody(s):
             text_parts.append(f'<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">{h(b)}</p>')
         elif kind == 'body':
             text_parts.append(f'<p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">{h(b or a)}</p>')
+        elif kind == 'stat_sym':
+            text_parts.append(f'<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">{h(a)}</span>')
         elif kind == 'text':
             text_parts.append(f'<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">{h(a)}</p>')
     if goals:
@@ -345,27 +354,28 @@ def render_gallery(s):
         caption = texts[1] if len(texts)>1 else ''
     elif texts:
         caption = texts[0]
-    # For process slides (16-31), extract more structured content
-    output_text = ''
-    desc_text = ''
-    bullets_text = ''
+    # Render ALL non-heading text blocks so nothing is dropped
+    all_text_html = ''
     for t in texts:
-        if t.startswith('OUTPUT:'): output_text = t
-        elif len(t) > 100: desc_text = t
-        elif '|' in t and len(t) > 20: bullets_text = t
+        if t == heading or t == caption:
+            continue
+        if t.startswith('OUTPUT:'):
+            all_text_html += f'<p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">{h(t)}</p>'
+        elif len(t) > 80:
+            all_text_html += f'<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">{h(t)}</p>'
+        else:
+            all_text_html += f'<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">{h(t)}</p>'
     cnt = len(imgs)
     img_html = ''.join(img(im) for im in imgs)
     head_html = ''
     if heading:
         label, body = split_lb(heading) if '\n' in heading else (heading, '')
         head_html = f'<div class="t-gallery__head"><h2 class="t-gallery__heading reveal">{h(label)}</h2></div>'
-    extra = ''
-    if output_text: extra += f'<p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">{h(output_text)}</p>'
-    if desc_text: extra += f'<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">{h(desc_text)}</p>'
-    if bullets_text: extra += f'<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">{h(bullets_text)}</p>'
+    if caption:
+        head_html += f'<p class="t-gallery__caption reveal">{h(caption)}</p>'
     return f'''<section class="slide t-gallery" data-slide="{n}" data-theme="dark">
   {head_html}
-  {extra}
+  {all_text_html}
   <div class="t-gallery__grid" data-count="{cnt}">{img_html}</div>
   <footer class="footer-bar"><span class="footer-bar__num">{n:02d} / 86</span></footer>
 </section>'''
@@ -446,17 +456,79 @@ def build():
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* === REVEAL ANIMATION === */
+/* === REVEAL ANIMATIONS === */
 .reveal {{ opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1), transform 0.7s cubic-bezier(0.2,0.8,0.2,1); }}
 .slide.visible .reveal {{ opacity: 1; transform: translateY(0); }}
-.slide.visible .reveal:nth-child(2) {{ transition-delay: 0.1s; }}
-.slide.visible .reveal:nth-child(3) {{ transition-delay: 0.18s; }}
-.slide.visible .reveal:nth-child(4) {{ transition-delay: 0.25s; }}
+.slide.visible .reveal:nth-child(2) {{ transition-delay: 0.08s; }}
+.slide.visible .reveal:nth-child(3) {{ transition-delay: 0.16s; }}
+.slide.visible .reveal:nth-child(4) {{ transition-delay: 0.24s; }}
 .slide.visible .reveal:nth-child(5) {{ transition-delay: 0.32s; }}
-.slide.visible .reveal:nth-child(6) {{ transition-delay: 0.38s; }}
+.slide.visible .reveal:nth-child(6) {{ transition-delay: 0.4s; }}
+.slide.visible .reveal:nth-child(7) {{ transition-delay: 0.48s; }}
+.slide.visible .reveal:nth-child(8) {{ transition-delay: 0.56s; }}
+
+/* Slide-from-left variant */
+.reveal-left {{ opacity: 0; transform: translateX(-40px); transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1), transform 0.7s cubic-bezier(0.2,0.8,0.2,1); }}
+.slide.visible .reveal-left {{ opacity: 1; transform: translateX(0); }}
+
+/* Scale-in variant for cards */
+.reveal-scale {{ opacity: 0; transform: scale(0.92); transition: opacity 0.6s cubic-bezier(0.2,0.8,0.2,1), transform 0.6s cubic-bezier(0.2,0.8,0.2,1); }}
+.slide.visible .reveal-scale {{ opacity: 1; transform: scale(1); }}
+
+/* Stagger for grid children (stat cards, num cards, gallery images) */
+.slide.visible .num-card:nth-child(1),
+.slide.visible .stat-card:nth-child(1),
+.slide.visible .media-frame:nth-child(1) {{ transition-delay: 0.1s; }}
+.slide.visible .num-card:nth-child(2),
+.slide.visible .stat-card:nth-child(2),
+.slide.visible .media-frame:nth-child(2) {{ transition-delay: 0.18s; }}
+.slide.visible .num-card:nth-child(3),
+.slide.visible .stat-card:nth-child(3),
+.slide.visible .media-frame:nth-child(3) {{ transition-delay: 0.26s; }}
+.slide.visible .num-card:nth-child(4),
+.slide.visible .stat-card:nth-child(4),
+.slide.visible .media-frame:nth-child(4) {{ transition-delay: 0.34s; }}
+.slide.visible .num-card:nth-child(5),
+.slide.visible .stat-card:nth-child(5),
+.slide.visible .media-frame:nth-child(5) {{ transition-delay: 0.42s; }}
+.slide.visible .num-card:nth-child(6),
+.slide.visible .stat-card:nth-child(6),
+.slide.visible .media-frame:nth-child(6) {{ transition-delay: 0.5s; }}
+.num-card, .stat-card {{ opacity: 0; transform: translateY(20px) scale(0.96); transition: opacity 0.6s cubic-bezier(0.2,0.8,0.2,1), transform 0.6s cubic-bezier(0.2,0.8,0.2,1); }}
+.slide.visible .num-card, .slide.visible .stat-card {{ opacity: 1; transform: translateY(0) scale(1); }}
+.media-frame {{ opacity: 0; transform: scale(0.94); transition: opacity 0.5s cubic-bezier(0.2,0.8,0.2,1), transform 0.5s cubic-bezier(0.2,0.8,0.2,1); }}
+.slide.visible .media-frame {{ opacity: 1; transform: scale(1); }}
+
+/* Accent bar animation */
+@keyframes barGrow {{ from {{ transform: scaleX(0); }} to {{ transform: scaleX(1); }} }}
+.slide.visible .t-cover__accent-bar {{ animation: barGrow 0.8s cubic-bezier(0.2,0.8,0.2,1) 0.6s both; transform-origin: left; }}
+.slide.visible .accent-stripe {{ animation: barGrow 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.4s both; transform-origin: left; }}
+
+/* Section label line animation */
+.section-label::before {{ transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1) 0.3s; }}
+.slide.visible .section-label::before {{ transform: scaleX(1); }}
+
+/* Pill hover lift */
+.pill:hover {{ transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }}
+
+/* FROM/TO panel entrance */
+.ft-panel--from {{ opacity: 0; transform: translateX(-30px); transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s; }}
+.ft-panel--to {{ opacity: 0; transform: translateX(30px); transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s; }}
+.ft-arrow {{ opacity: 0; transition: opacity 0.4s ease 0.5s; }}
+.slide.visible .ft-panel--from, .slide.visible .ft-panel--to {{ opacity: 1; transform: translateX(0); }}
+.slide.visible .ft-arrow {{ opacity: 0.8; }}
+
+/* Transition slide — hero text entrance */
+.t-transition__title {{ opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.2,0.8,0.2,1) 0.2s, transform 1s cubic-bezier(0.2,0.8,0.2,1) 0.2s; }}
+.slide.visible .t-transition__title {{ opacity: 1; transform: translateY(0); }}
+
+/* Closing slide — scale in */
+.t-closing__title {{ opacity: 0; transform: scale(0.85); transition: opacity 1.2s cubic-bezier(0.2,0.8,0.2,1), transform 1.2s cubic-bezier(0.2,0.8,0.2,1); }}
+.slide.visible .t-closing__title {{ opacity: 1; transform: scale(1); }}
+
 /* === PROGRESS BAR === */
 .deck-progress {{ position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 100; pointer-events: none; }}
-.deck-progress__bar {{ height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); transition: width 0.3s ease; }}
+.deck-progress__bar {{ height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); transition: width 0.4s cubic-bezier(0.2,0.8,0.2,1); box-shadow: 0 0 8px rgba(74,144,226,0.5); }}
 .deck-counter {{ position: fixed; bottom: 1rem; right: 1.5rem; font-family: var(--font-display); font-style: italic; font-size: 0.85rem; color: var(--ink-inv-soft); z-index: 100; pointer-events: none; letter-spacing: 0.05em; }}
 {all_css}
 </style>

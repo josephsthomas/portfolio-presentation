@@ -8,17 +8,79 @@
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Figtree:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
 <style>
-/* === REVEAL ANIMATION === */
+/* === REVEAL ANIMATIONS === */
 .reveal { opacity: 0; transform: translateY(24px); transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1), transform 0.7s cubic-bezier(0.2,0.8,0.2,1); }
 .slide.visible .reveal { opacity: 1; transform: translateY(0); }
-.slide.visible .reveal:nth-child(2) { transition-delay: 0.1s; }
-.slide.visible .reveal:nth-child(3) { transition-delay: 0.18s; }
-.slide.visible .reveal:nth-child(4) { transition-delay: 0.25s; }
+.slide.visible .reveal:nth-child(2) { transition-delay: 0.08s; }
+.slide.visible .reveal:nth-child(3) { transition-delay: 0.16s; }
+.slide.visible .reveal:nth-child(4) { transition-delay: 0.24s; }
 .slide.visible .reveal:nth-child(5) { transition-delay: 0.32s; }
-.slide.visible .reveal:nth-child(6) { transition-delay: 0.38s; }
+.slide.visible .reveal:nth-child(6) { transition-delay: 0.4s; }
+.slide.visible .reveal:nth-child(7) { transition-delay: 0.48s; }
+.slide.visible .reveal:nth-child(8) { transition-delay: 0.56s; }
+
+/* Slide-from-left variant */
+.reveal-left { opacity: 0; transform: translateX(-40px); transition: opacity 0.7s cubic-bezier(0.2,0.8,0.2,1), transform 0.7s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .reveal-left { opacity: 1; transform: translateX(0); }
+
+/* Scale-in variant for cards */
+.reveal-scale { opacity: 0; transform: scale(0.92); transition: opacity 0.6s cubic-bezier(0.2,0.8,0.2,1), transform 0.6s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .reveal-scale { opacity: 1; transform: scale(1); }
+
+/* Stagger for grid children (stat cards, num cards, gallery images) */
+.slide.visible .num-card:nth-child(1),
+.slide.visible .stat-card:nth-child(1),
+.slide.visible .media-frame:nth-child(1) { transition-delay: 0.1s; }
+.slide.visible .num-card:nth-child(2),
+.slide.visible .stat-card:nth-child(2),
+.slide.visible .media-frame:nth-child(2) { transition-delay: 0.18s; }
+.slide.visible .num-card:nth-child(3),
+.slide.visible .stat-card:nth-child(3),
+.slide.visible .media-frame:nth-child(3) { transition-delay: 0.26s; }
+.slide.visible .num-card:nth-child(4),
+.slide.visible .stat-card:nth-child(4),
+.slide.visible .media-frame:nth-child(4) { transition-delay: 0.34s; }
+.slide.visible .num-card:nth-child(5),
+.slide.visible .stat-card:nth-child(5),
+.slide.visible .media-frame:nth-child(5) { transition-delay: 0.42s; }
+.slide.visible .num-card:nth-child(6),
+.slide.visible .stat-card:nth-child(6),
+.slide.visible .media-frame:nth-child(6) { transition-delay: 0.5s; }
+.num-card, .stat-card { opacity: 0; transform: translateY(20px) scale(0.96); transition: opacity 0.6s cubic-bezier(0.2,0.8,0.2,1), transform 0.6s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .num-card, .slide.visible .stat-card { opacity: 1; transform: translateY(0) scale(1); }
+.media-frame { opacity: 0; transform: scale(0.94); transition: opacity 0.5s cubic-bezier(0.2,0.8,0.2,1), transform 0.5s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .media-frame { opacity: 1; transform: scale(1); }
+
+/* Accent bar animation */
+@keyframes barGrow { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.slide.visible .t-cover__accent-bar { animation: barGrow 0.8s cubic-bezier(0.2,0.8,0.2,1) 0.6s both; transform-origin: left; }
+.slide.visible .accent-stripe { animation: barGrow 0.6s cubic-bezier(0.2,0.8,0.2,1) 0.4s both; transform-origin: left; }
+
+/* Section label line animation */
+.section-label::before { transform: scaleX(0); transform-origin: left; transition: transform 0.5s cubic-bezier(0.2,0.8,0.2,1) 0.3s; }
+.slide.visible .section-label::before { transform: scaleX(1); }
+
+/* Pill hover lift */
+.pill:hover { transform: translateY(-2px); box-shadow: 0 4px 12px rgba(0,0,0,0.15); }
+
+/* FROM/TO panel entrance */
+.ft-panel--from { opacity: 0; transform: translateX(-30px); transition: opacity 0.6s ease 0.2s, transform 0.6s ease 0.2s; }
+.ft-panel--to { opacity: 0; transform: translateX(30px); transition: opacity 0.6s ease 0.4s, transform 0.6s ease 0.4s; }
+.ft-arrow { opacity: 0; transition: opacity 0.4s ease 0.5s; }
+.slide.visible .ft-panel--from, .slide.visible .ft-panel--to { opacity: 1; transform: translateX(0); }
+.slide.visible .ft-arrow { opacity: 0.8; }
+
+/* Transition slide — hero text entrance */
+.t-transition__title { opacity: 0; transform: translateY(40px); transition: opacity 1s cubic-bezier(0.2,0.8,0.2,1) 0.2s, transform 1s cubic-bezier(0.2,0.8,0.2,1) 0.2s; }
+.slide.visible .t-transition__title { opacity: 1; transform: translateY(0); }
+
+/* Closing slide — scale in */
+.t-closing__title { opacity: 0; transform: scale(0.85); transition: opacity 1.2s cubic-bezier(0.2,0.8,0.2,1), transform 1.2s cubic-bezier(0.2,0.8,0.2,1); }
+.slide.visible .t-closing__title { opacity: 1; transform: scale(1); }
+
 /* === PROGRESS BAR === */
 .deck-progress { position: fixed; top: 0; left: 0; width: 100%; height: 3px; z-index: 100; pointer-events: none; }
-.deck-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); transition: width 0.3s ease; }
+.deck-progress__bar { height: 100%; width: 0; background: linear-gradient(90deg, var(--blue-500), var(--blue-400)); transition: width 0.4s cubic-bezier(0.2,0.8,0.2,1); box-shadow: 0 0 8px rgba(74,144,226,0.5); }
 .deck-counter { position: fixed; bottom: 1rem; right: 1.5rem; font-family: var(--font-display); font-style: italic; font-size: 0.85rem; color: var(--ink-inv-soft); z-index: 100; pointer-events: none; letter-spacing: 0.05em; }
 /* ============================================================
    DESIGN TOKENS — sampled from Case.Studies.pptx theme XML
@@ -1533,7 +1595,8 @@ ol, ul { list-style: none; }
     <div class="t-hero-intro__bio reveal">15+ years shaping digital experiences for Fortune 500 clients across pharmaceutical, healthcare, finance, automotive, and CPG. I design content and experience strategy for complex, regulated environments — from information architecture and taxonomy to CMS-ready manuscripts, editorial governance, and AI-enabled content operations.
 
 I build LLM-aware SEO foundations, prompt libraries, and human-in-the-loop review systems that connect AI-assisted drafting with expert review at enterprise scale.</div>
-    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas <span class="footer-bar__dot"></span> HELLO, I&#x27;M JOE.</div>
+    
+    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas</div>
   </div>
   <div class="t-hero-intro__portrait"><figure class="media-frame"><img data-src="assets/slide2_img1.jpg" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">02 / 86</span></footer>
@@ -1573,7 +1636,7 @@ Health, with one phase leading to six</p></article>
 </section>
 
 <section class="slide t-gallery" data-slide="5" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">CLIENTS</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">CLIENTS</h2></div><p class="t-gallery__caption reveal">Trusted by Fortune 500 brands.</p>
   
   <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide5_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide5_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">05 / 86</span></footer>
@@ -1767,9 +1830,9 @@ UAT</p></article></div>
 </section>
 
 <section class="slide t-gallery" data-slide="16" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Intake &amp; Requirements</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Intake &amp; Requirements</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Internal Brief, Workback Plan (Smartsheet), and Solution Plan</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Synthesized discovery brief
+Internal Brief, Workback Plan (Smartsheet), and Solution Plan</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Understand business requirements, establish goals, and get immersed in the brand. Align on roles and responsibilities, brief, and solution + project plan.</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Synthesized discovery brief
 Business objectives
 Project north star and inspiration
 Areas of focus and exploration
@@ -1780,9 +1843,9 @@ Plan of action</p>
 </section>
 
 <section class="slide t-gallery" data-slide="17" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Client Workshops</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Client Workshops</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Digital Whiteboard &amp; Synthesized Findings</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Goals and objectives for the design 
+Digital Whiteboard &amp; Synthesized Findings</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Speak with key internal client leads and/or have a client workshop to understand:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Goals and objectives for the design 
 Audience identification and prioritization 
 Initial onboarding questions 
 Mandatories and requirements 
@@ -1794,9 +1857,9 @@ What success looks like</p>
 </section>
 
 <section class="slide t-gallery" data-slide="18" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Analytics Audit and Analysis</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Analytics Audit and Analysis</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Who is visiting the properties? 
+Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Analyze traffic, engagement, pathways, and conversion across digital properties to understand:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Who is visiting the properties? 
 When are they visiting and on what devices? 
 What are the top performing pages and content? 
 What content and features are most highly engaged?
@@ -1807,9 +1870,9 @@ What are the regional nuances in site traffic and engagement?</p>
 </section>
 
 <section class="slide t-gallery" data-slide="19" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Search Audit and Analysis</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Search Audit and Analysis</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">How are visitors finding these properties? 
+Current State Analysis</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Analyze findability, tagging, linking, site architecture, and URL structure of my digital properties to understand:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">How are visitors finding these properties? 
 Where are they coming from? 
 What are the search behaviors for target audiences? 
 What are top questions being asked in the space? 
@@ -1820,9 +1883,9 @@ How does it differ by region?</p>
 </section>
 
 <section class="slide t-gallery" data-slide="20" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content and UX Inventory</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content and UX Inventory</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Current State Assessment</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What features functionality, and content exist in the platform?
+Current State Assessment</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Audit and index features, functionality, and content on existing sites and similar experiences to understand:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What features functionality, and content exist in the platform?
 What tools, services, and data feeds exist in the platform 
 Functionality and content for specific features on comparable or competitive experiences 
 Opportunities and gaps in how features and content match-up with community audience needs</p>
@@ -1831,9 +1894,9 @@ Opportunities and gaps in how features and content match-up with community audie
 </section>
 
 <section class="slide t-gallery" data-slide="21" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Audience Research</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Audience Research</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Synthesized Research</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What are my visitors trying to achieve? 
+Synthesized Research</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Collect and analyze data directly from users via surveys, usability testing, and/or interviews to understand:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">What are my visitors trying to achieve? 
 What hurdles are they experiencing? 
 What are their expectations for content and features?
 What demographic information will they share? 
@@ -1843,9 +1906,9 @@ How might I begin to categorize my visitors and review their responses in a stru
 </section>
 
 <section class="slide t-gallery" data-slide="22" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Personas and Journeys</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Personas and Journeys</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Profiles and Journey Maps</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Key mindsets, needs, goals, and current pain-points
+Profiles and Journey Maps</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Using audience research and audit findings, develop profiles and journeys to illustrate:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Key mindsets, needs, goals, and current pain-points
 Content, features, experiences, and resources that best meet audience needs
 Opportunities to engage with target audiences over time across touchpoints</p>
   <div class="t-gallery__grid" data-count="4"><figure class="media-frame"><img data-src="assets/slide22_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide22_img4.png" alt="" loading="lazy"></figure></div>
@@ -1853,9 +1916,9 @@ Opportunities to engage with target audiences over time across touchpoints</p>
 </section>
 
 <section class="slide t-gallery" data-slide="23" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Experience Strategy</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Experience Strategy</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Strategic Framework</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Experience imperatives or principles
+Strategic Framework</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">The experience strategy is the culmination of insights uncovered during discovery and research into a north star vision of what the new experience should solve for. This often includes:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Experience imperatives or principles
 Short-term vision 
 Long-term vision
 Feature definition &amp; requirements</p>
@@ -1864,9 +1927,9 @@ Feature definition &amp; requirements</p>
 </section>
 
 <section class="slide t-gallery" data-slide="24" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Omnichannel Strategy</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Omnichannel Strategy</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Content and Channel Strategy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Content Themes &amp; Pillars
+Content and Channel Strategy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">I develop a well-defined strategy for content, editorial, and SEO across channels, using search data to build a long-term plan for creating, delivering, and managing high-value content.</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Content Themes &amp; Pillars
 Content Needs &amp; Opportunities
 Content Formats &amp; Style
 Content Distribution Channels
@@ -1876,9 +1939,9 @@ Governance and Workflow Guidelines</p>
 </section>
 
 <section class="slide t-gallery" data-slide="25" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Organic Search Recommendations</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Organic Search Recommendations</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Site Optimization Recommendations</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Striking Distance Keywords
+Site Optimization Recommendations</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">The SEO recommendations are the culmination of findings from the technical audit, alignment with strategy, and insights from immersion sessions. I create a complete framework for clients that improves visibility and conversion.</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Striking Distance Keywords
 New Keyword Opportunities
 Backlink Recommendations 
 Site Performance Recommendations</p>
@@ -1887,7 +1950,7 @@ Site Performance Recommendations</p>
 </section>
 
 <section class="slide t-gallery" data-slide="26" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Sitemap and Taxonomy</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Sitemap and Taxonomy</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
 Visual &amp; Excel Sitemap</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">The sitemap is a representation of the full platform architecture. It accounts for all pages, content, tools, and actions that need to live within the system. It shows how sections and pages are organized, their hierarchy, and where key content lives within the structure.</p>
   <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide26_img1.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide26_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide26_img3.png" alt="" loading="lazy"></figure></div>
@@ -1895,9 +1958,9 @@ Visual &amp; Excel Sitemap</p><p class="reveal" style="font-size:var(--t-small);
 </section>
 
 <section class="slide t-gallery" data-slide="27" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Systems</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Systems</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Digital Design System</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Voice and tone 
+Digital Design System</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">The digital design system defines the look and feel of all elements to be included in the new digital experience. It often includes:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Voice and tone 
 Color and typography 
 Imagery and illustration 
 User interface elements 
@@ -1908,23 +1971,29 @@ Site shell (header, footer, nav)</p>
 </section>
 
 <section class="slide t-gallery" data-slide="28" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Execution</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Digital Design Execution</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Design Prototypes</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Grounded in the features and requirements defined in the previous phases, execution moves swiftly. I create digital experiences that are high performing, beautiful, and functional, while faithfully representing the brand.</p>
+Design Prototypes</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Grounded in the features and requirements defined in the previous phases, execution moves swiftly. I create digital experiences that are high performing, beautiful, and functional, while faithfully representing the brand.</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Enterprise websites and microsites
+CRM design
+Application design
+Tools &amp; Intranets</p>
   <div class="t-gallery__grid" data-count="3"><figure class="media-frame"><img data-src="assets/slide28_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide28_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide28_img3.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">28 / 86</span></footer>
 </section>
 
 <section class="slide t-gallery" data-slide="29" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Production</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Production</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Copy Deck &amp; Guidelines</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Creating end-to-end content, from ideation and keyword research to writing on-brand content. My process simplifies client reviews and approvals, ensuring every piece of copy is strategically aligned and resonates with your target audience.</p>
+Copy Deck &amp; Guidelines</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Creating end-to-end content, from ideation and keyword research to writing on-brand content. My process simplifies client reviews and approvals, ensuring every piece of copy is strategically aligned and resonates with your target audience.</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Voice &amp; Tone Guidelines
+Copy Deck Templates
+Completed Copy Decks
+Build Kits</p>
   <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide29_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide29_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">29 / 86</span></footer>
 </section>
 
 <section class="slide t-gallery" data-slide="30" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Governance</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Content Governance</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
 Workflows, Process Documents, and Governance Frameworks</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">I create Governance Plans that establish the framework for managing content creation, approval, publication, and maintenance to ensure consistency, quality, and compliance. I also create Content Lifecycle Plans that outline the stages through which content passes from creation to archiving. This plan ensures that content remains relevant, accurate, and valuable over time.</p>
   <div class="t-gallery__grid" data-count="2"><figure class="media-frame"><img data-src="assets/slide30_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide30_img2.png" alt="" loading="lazy"></figure></div>
@@ -1932,9 +2001,9 @@ Workflows, Process Documents, and Governance Frameworks</p><p class="reveal" sty
 </section>
 
 <section class="slide t-gallery" data-slide="31" data-theme="dark">
-  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Creative Social and Paid</h2></div>
+  <div class="t-gallery__head"><h2 class="t-gallery__heading reveal">Creative Social and Paid</h2></div><p class="t-gallery__caption reveal">My Process</p>
   <p class="reveal" style="font-size:var(--t-meta);color:var(--blue-400);text-transform:uppercase;letter-spacing:0.15em">OUTPUT: 
-Paid &amp; Organic Creative + Copy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Paid media assets
+Paid &amp; Organic Creative + Copy</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">I know a brand doesn’t end at their owned experience. I work tirelessly to make sure that a brand’s tone of voice, visual branding, and look and feel are consistent across all touchpoints and media. I create:</p><p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute);max-width:65ch;line-height:1.55">Paid media assets
 Social media assets
 Graphic elements and creative exploration
 Print media needs and resources</p>
@@ -1971,6 +2040,7 @@ Print media needs and resources</p>
 <section class="slide t-approach" data-slide="35" data-theme="dark">
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">UC Davis Health is a leading, nationally ranked academic health system that tackles the world’s most pressing healthcare issues. They provide patient care, research trailblazing therapies, and offer world-class medical education. Their owned digital platform is a collection of academic, clinical, and research department microsites, each with their own client leads and goals. The site architecture and navigation was largely based on internal organizational structure, department initiatives, and leadership requests, creating siloed experiences that made it difficult for their priority audiences, including prospective patients, referring physicians, and prospective residents, to navigate to relevant content easily. They needed a phased and systematic process to overhauling their site, that could get buy-in from across the organization.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Content strategy, taxonomy, and IA across a multi-phase redesign. Grew the account from one phase to six.</p>
 <div class="pill-row"><span class="pill pill--goal reveal">New Patient Acquisition</span><span class="pill pill--goal reveal">Elevate National Reputation</span><span class="pill pill--goal reveal">Illustrate Research &amp; Clinical Solutions</span><span class="pill pill--goal reveal">Recruit Residents, Faculty &amp; Fellows</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide35_img1.jpg" alt="" loading="lazy"></figure></div>
@@ -2028,10 +2098,16 @@ Provide an overview of the residency, rotations, current residents, reasons to b
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">It was very intuitive, very user friendly, and well organized. YOUR website is very informative as well.
 Prospective Heart Health Patient</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Average Time On Site</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">63</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Appointment Page Visits</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">138</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">New Organic Traffic to Health Library</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">47</p></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide39_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img6.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide39_img7.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">39 / 86</span></footer>
@@ -2059,6 +2135,7 @@ Prospective Heart Health Patient</p>
 <section class="slide t-approach" data-slide="42" data-theme="dark">
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The United States Center for Disease Control and Prevention (CDC) Department of Viral Hepatitis (DVH) engaged my team to evolve and redesign their website, better ensuring a user-centered experience consistent with their strategic objectives. Midway through my engagement with DVH, CDC announced “Clean Slate”, an agency-wide directive to rethink, rewrite, and relaunch a new, improved, and redesigned CDC.gov website — all within the span of a year. Now, I needed to help DVH execute the Clean Slate directive to rewrite and re-platform their entire site while still delivering on the initial goals of their site evolution.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Content Consolidation</span><span class="pill pill--goal reveal">Plain-Language Compliance</span><span class="pill pill--goal reveal">Simplify Taxonomy &amp; IA</span><span class="pill pill--goal reveal">Brand Redesign</span><span class="pill pill--goal reveal">Content Workflows</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide42_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide42_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">42 / 86</span></footer>
@@ -2145,6 +2222,7 @@ Establish clear messaging hierarchy via template-specific page models. Culminati
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">For more than 30 years, Acadia has been trailblazing breakthroughs for people with neurological conditions. They developed and commercialized the first and only approved treatment for hallucinations and delusions associated with Parkinson’s disease psychosis, and Rett syndrome. 
 Acadia’s existing website was outdated, heavily clinical, and static, failing to connect with patients and provide a complete view of the company. To reflect the ‘new’ Acadia, they needed a new corporate website that embodies their new brand, providing the flexibility to grow with the organization for years to come.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Employee Recruitment</span><span class="pill pill--goal reveal">Patient Advocacy</span><span class="pill pill--goal reveal">Showcase Innovation &amp; Pipeline</span><span class="pill pill--goal reveal">Build Industry Partnerships</span><span class="pill pill--goal reveal">Community Outreach</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide48_img1.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">48 / 86</span></footer>
@@ -2153,6 +2231,7 @@ Acadia’s existing website was outdated, heavily clinical, and static, failing 
 <section class="slide t-approach" data-slide="49" data-theme="dark">
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SOLUTION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The new Acadia.com is the tangible illustration of the research and progress Acadia is making, with stories, insights, and information demonstrating why the new solutions matter to patients. The site balances clinical and patient-focused content with rich interactive features and stories within a user-centric architecture that is easy to navigate.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Employee Recruitment</span><span class="pill pill--goal reveal">Patient Advocacy</span><span class="pill pill--goal reveal">Showcase Innovation &amp; Pipeline</span><span class="pill pill--goal reveal">Build Industry Partnerships</span><span class="pill pill--goal reveal">Community Outreach</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide49_img1.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">49 / 86</span></footer>
@@ -2174,6 +2253,8 @@ Acadia’s existing website was outdated, heavily clinical, and static, failing 
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Overall increase in pageviews, users, organic clicks, and impressions. Referral Sources sessions increased by 3.6%.</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I delivered features that fulfilled previously unmet audience needs</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic clicks</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">39</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">KEY FEATURES</p>
 <div class="section-label reveal">INTERACTIVE PRODUCT PIPELINE</div>
@@ -2185,10 +2266,16 @@ These pages were evolved to be more complete views of the disease, connecting to
 LEADERSHIP PROFILES
 Content-rich profiles give a full picture of Acadia&#x27;s people, their expertise and thought leadership.</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">YOY Pageview Increases</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">201</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic impressions</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">84</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">YOY user increase</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">75</p></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide51_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide51_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">51 / 86</span></footer>
@@ -2249,16 +2336,28 @@ Evolved Mars.com experience and creative with 15+ new pages, new site navigation
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Revolutionizing the Mars.com digital experience through dynamic storytelling and new features that engage the target audiences in meaningful ways.</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">I have consistently delivered positive results</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Mars.com visitors</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">36</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">More visits from social media</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">74</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Organic search visitors</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">15</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">News and stories visitors</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">45</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Female Mars.com visitors</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">%</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">20</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Search result placement increase</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">PAGE</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">74</p></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide57_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img2.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img3.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img4.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img5.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img6.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide57_img7.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">57 / 86</span></footer>
@@ -2288,6 +2387,7 @@ The launch of Eroxon in the U.S. market presented a unique opportunity to introd
 <section class="slide t-approach" data-slide="60" data-theme="dark">
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">My approach to the Eroxon launch centered on creating an educational, empathetic, and user-focused digital experience that highlighted the product’s unique features while addressing the emotional and relational aspects of ED. The pre-launch landing page built anticipation and drove pre-orders with streamlined navigation, clear calls-to-action, and benefit-focused messaging. For the full site launch, I added a thorough content library on ED causes, symptoms, and treatments to give users the knowledge they need in a positive, reassuring tone. I also engaged partners of ED patients through articles on the impact of ED on relationships and ways to offer support. Additionally, an FAQ section addressed common safety and efficacy concerns, ensuring users had the information needed to make informed decisions.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">New Product Launch</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Multi-User Engagement</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide60_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide60_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">60 / 86</span></footer>
@@ -2344,6 +2444,7 @@ The site provides extensive educational content on ED, including its causes, sym
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Nicorette has been stepping up its game with new gums, chews and lozenges, but their MyQuit program was stuck in the past – literally. Originally designed to help smokers quit, it had evolved haphazardly and piecemeal, becoming a tangled web of outdated applications, clunky websites, and confusing logged in experiences. 
 Users found themselves lost in a maze of mismatched designs, redundant content, and overlapping platforms— trying to piece together an experience that simply didn&#x27;t work anymore. For modern smokers ready to take the leap, the program felt more like a blocker than a helping hand. It was clear: MyQuit needed a serious refresh to meet today’s standards and truly support quitters on their journey.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Program Education</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide65_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide65_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide65_img3.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">65 / 86</span></footer>
@@ -2354,6 +2455,7 @@ Users found themselves lost in a maze of mismatched designs, redundant content, 
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">After an extensive evaluation of the current Nicorette and MyQuit platforms, I outlined redundancies within the program—from a platform, content, and experience perspective.
 Through that evaluation, I documented all content and experiences within the broken platform and outlined what was working, what wasn’t – and what should be migrated over into the new experience. 
 I mapped out content and experiences to users at various stages of their quit smoking journey using both existing content as well as new gamification, tracking, and behavioral support tools. This full omnichannel experience, paired with a new visual identity, delivers on the current needs of users looking to quit smoking.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Program Education</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide66_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide66_img2.jpg" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide66_img3.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">66 / 86</span></footer>
@@ -2421,6 +2523,7 @@ This transition presented a unique opportunity to create a first-of-its-kind dig
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I created a strong omnichannel strategy, inclusive of a pre-launch and full-launch version of the website and CRM program, with first-party data to encourage pre-orders in a first-of-its-kind eCommerce integration. Once in market, I introduced VoltarenGel.com—the first arthritis-friendly digital experience, recognized by The Arthritis Foundation and rigorously tested with real arthritis patients. 
 The full site offered brand-new eCommerce functionality and first-party data collection. The site was built with a focus on accessibility, integrating features that were directly informed by the needs of its users. Voice-activated search and tap-to-chat functionalities, large tap targets, strategic page scroll depth, and hands-free content navigation via videos and head gesture scroll education were all critical components. These features made the site not just a digital destination, but a complete support system for arthritis patients.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Product Awareness</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Brand Transformation (OTC)</span><span class="pill pill--goal reveal">CRM Email Program</span><span class="pill pill--goal reveal">Omnichannel Strategy</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide72_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide72_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">72 / 86</span></footer>
@@ -2478,6 +2581,7 @@ With the headache and migraine category being both competitive and cluttered, Ex
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">The design focused on delivering a user-centric experience with streamlined navigation, making it easy for users to access the information they needed and find the right products. Interactive tools, like the product selector, simplified decision-making, while strategically placed calls to action guided users from awareness to purchase. SEO-optimized content boosted organic traffic, establishing Excedrin.com as the go-to resource for headache and migraine management. This approach differentiated GSK Consumer Health, inspiring similar strategies across brands. 
 The result is a modern, engaging site that educates, engages, and drives conversions, cementing Excedrin’s leadership in the head care category.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Product Awareness</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Product Education</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Site Launch</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide77_img1.gif" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide77_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">77 / 86</span></footer>
@@ -2530,6 +2634,7 @@ Integration with tools like PriceSpider facilitates a smooth transition from inf
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE SITUATION</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">In partnership with McCann Global Health, St. Jude approached my team in desperate need of a complete refresh of their HPV Vaccination campaign. Not only was the current campaign not gaining the desired momentum and ROI, but it was also dated and geared towards an outdated user group – healthcare providers.
 St. Jude had established the need for a refreshed visual look in tandem with a new omnichannel perspective and strategy, in addition to new user audiences, but wasn’t sure where to turn – that’s where my team came in.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Microsite</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide81_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide81_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">81 / 86</span></footer>
@@ -2539,6 +2644,7 @@ St. Jude had established the need for a refreshed visual look in tandem with a n
   <div class="t-approach__text" style="max-width:55ch"><div class="section-label reveal">THE APPROACH</div>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">With My data-backed insights, I immediately determined that the entire campaign was lacking targeted content and journeys for its main audience – parents and caregivers of young adults. My Content, UX, Design, and Media teams worked in tandem to create a wonderfully targeted, beautifully crafted experience that maintained a campaign experience from touchpoint to touchpoint. 
 I evaluated key channel pillars to identify not only what should be said, but where it should be said and who it should be targeted to. My team delivered content and strategic areas of focus around education, enablement, and partnership with the St. Jude experience – leading to meaningful, measurable results.</p>
+<p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">GOALS</p>
 <div class="pill-row"><span class="pill pill--goal reveal">Omnichannel Integration</span><span class="pill pill--goal reveal">Category Awareness</span><span class="pill pill--goal reveal">Multi-User Engagement</span><span class="pill pill--goal reveal">Disease State Awareness</span><span class="pill pill--goal reveal">New Microsite</span></div></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide82_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide82_img2.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">82 / 86</span></footer>
@@ -2549,12 +2655,17 @@ I evaluated key channel pillars to identify not only what should be said, but wh
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">Mid-campaign metrics indicate that the campaign is highly resonant and drastically outperforming benchmarks</p>
 <p class="reveal" style="line-height:1.65;max-width:60ch;white-space:pre-line">I built a strong strategic foundation with targeted content on intentional channels</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Paid Social Impressions on Facebook &amp; Instagram</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">+</span>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">M</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">2.8</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Clicks from paid social to Campaign Website</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">K</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">22</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Clicks to the HPV landing page from paid search</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">x</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">2.5</p>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">Engagement rate from previous campaign</p>
+<span class="reveal" style="font-family:var(--font-display);font-size:var(--t-stat-md);color:var(--blue-400);font-weight:700">x</span>
 <p class="reveal" style="font-size:var(--t-small);color:var(--ink-inv-mute)">6</p></div>
   <div style="display:grid;gap:var(--gap-md);grid-template-columns:repeat(auto-fit,minmax(200px,1fr));align-self:center"><figure class="media-frame"><img data-src="assets/slide83_img1.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide83_img2.png" alt="" loading="lazy"></figure><figure class="media-frame"><img data-src="assets/slide83_img3.png" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">83 / 86</span></footer>
@@ -2575,7 +2686,8 @@ I evaluated key channel pillars to identify not only what should be said, but wh
     <div class="t-hero-intro__bio reveal">I&#x27;ve spent 15 years building content systems for Fortune 500 companies in healthcare, pharma, finance, retail, automotive, and CPG. 
 
 The last three, I&#x27;ve been rebuilding those systems for a world where the search engine is an LLM and the result is an answer, not a link. Not many content strategists are doing that work yet. I am. If you need someone who knows how to get there, here&#x27;s my email.</div>
-    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas <span class="footer-bar__dot"></span> YOU MADE IT!</div>
+    
+    <div class="t-hero-intro__contact reveal">Franklin, TN <span class="footer-bar__dot"></span> joseph@jsthomas.org <span class="footer-bar__dot"></span> linkedin.com/in/jsthomas <span class="footer-bar__dot"></span> Thanks for reading!</div>
   </div>
   <div class="t-hero-intro__portrait"><figure class="media-frame"><img data-src="assets/slide85_img1.jpg" alt="" loading="lazy"></figure></div>
   <footer class="footer-bar"><span class="footer-bar__num">85 / 86</span></footer>
